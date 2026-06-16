@@ -32,7 +32,7 @@ interface Country {
         </p>
 
         <h2 class="text-3xl md:text-4xl font-semibold text-[#161616]">
-          Career360 Worldwide Presence
+          AltusCareer Worldwide Presence
         </h2>
 
         <p class="max-w-3xl mt-3 text-[#525252] text-sm md:text-base leading-relaxed">

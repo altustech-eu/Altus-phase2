@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 type MenuKey = 'programs' | 'ausbildung' | 'jobs' | 'study-abroad' | 'tools' | 'pricing';
@@ -35,7 +35,7 @@ interface LanguageOption {
     <header class="font-main bg-white sticky top-0 z-[9999] border-b border-[#e0e0e0]">
 
       <!-- Desktop Header -->
-      <div class="hidden xl:flex h-[50px] items-center bg-white mx-auto px-6 2xl:px-10 max-w-[1584px]">
+      <div class="hidden xl:flex h-[50px] items-center bg-white mx-auto px-6 2xl:px-10 max-w-[1584px] relative z-[10001]">
 
         <!-- Logo -->
         <div class="h-full w-[220px] flex items-center px-5 border-r border-[#e0e0e0]">
@@ -56,7 +56,6 @@ interface LanguageOption {
             <button
               class="desktop-nav-button"
               [class.active-nav]="openMenu === item.key"
-              (mouseenter)="openTopMenu(item.key)"
               (click)="toggleMenu(item.key)"
             >
               {{ item.label }}
@@ -74,11 +73,11 @@ interface LanguageOption {
             </button>
           }
 
-          <button class="desktop-nav-button" (mouseenter)="closeMenu()">
+          <button class="desktop-nav-button" (click)="closeAllMenus()">
             Events
           </button>
 
-          <button class="desktop-nav-button" (mouseenter)="closeMenu()">
+          <button class="desktop-nav-button" (click)="closeAllMenus()">
             About
           </button>
 
@@ -90,7 +89,7 @@ interface LanguageOption {
           <!-- Language Selector -->
           <div class="relative h-full">
             <button
-              class="h-full px-4 flex items-center gap-2 hover:bg-[#f4f4f4] text-[#393939]"
+              class="h-full px-4 flex items-center gap-2 hover:bg-[#e0e0e0] text-[#393939]"
               (click)="toggleLanguageDropdown()"
               aria-label="Language selector"
             >
@@ -126,7 +125,7 @@ interface LanguageOption {
             </button>
 
             @if (isLanguageOpen) {
-              <div class="absolute right-0 top-[50px] w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10000]">
+              <div class="absolute right-0 top-[50px] w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10002]">
                 @for (language of languages; track language.code) {
                   <button
                     class="language-option"
@@ -143,7 +142,7 @@ interface LanguageOption {
 
           <!-- Desktop Search Button -->
           <button
-            class="h-full w-[48px] flex items-center justify-center hover:bg-[#f4f4f4]"
+            class="h-full w-[48px] flex items-center justify-center hover:bg-[#e0e0e0]"
             aria-label="Search"
             (click)="goToMainSearch()"
           >
@@ -161,7 +160,7 @@ interface LanguageOption {
       </div>
 
       <!-- Mobile Header -->
-      <div class="xl:hidden h-[58px] flex items-center justify-between px-5 md:px-8 bg-white border-b border-[#e0e0e0]">
+      <div class="xl:hidden h-[58px] flex items-center justify-between px-5 md:px-8 bg-white border-b border-[#e0e0e0] relative z-[10001]">
 
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-[#0f62fe] text-white flex items-center justify-center text-sm font-bold">
@@ -196,7 +195,6 @@ interface LanguageOption {
             <span class="text-[12px] font-medium">{{ selectedLanguage.short }}</span>
           </button>
 
-          <!-- Mobile Search Button -->
           <button aria-label="Search" (click)="goToMainSearch()">
             <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <circle cx="11" cy="11" r="7"></circle>
@@ -211,9 +209,21 @@ interface LanguageOption {
 
       </div>
 
+     <!-- Page Overlay When Dropdown Is Open -->
+@if (openMenu !== '' || isLanguageOpen || isMobileMenuOpen) {
+  <div
+    class="fixed left-0 right-0 top-[58px] bottom-0 bg-black/50 z-[9997] xl:hidden"
+    (click)="closeAllMenus()"
+  ></div>
+
+  <div
+    class="fixed left-0 right-0 top-[50px] bottom-0 bg-black/50 z-[9997] hidden xl:block"
+    (click)="closeAllMenus()"
+  ></div>
+}
       <!-- Mobile Language Dropdown -->
       @if (isLanguageOpen) {
-        <div class="xl:hidden absolute top-[58px] right-5 md:right-8 w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10000]">
+        <div class="xl:hidden absolute top-[58px] right-5 md:right-8 w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10002]">
           @for (language of languages; track language.code) {
             <button
               class="language-option"
@@ -229,7 +239,7 @@ interface LanguageOption {
 
       <!-- Mobile Menu -->
       @if (isMobileMenuOpen) {
-        <div class="xl:hidden absolute top-[58px] left-0 right-0 bg-white shadow-2xl border-b border-[#e0e0e0] max-h-[86vh] overflow-y-auto z-[9999]">
+        <div class="xl:hidden absolute top-[58px] left-0 right-0 bg-white shadow-2xl border-b border-[#e0e0e0] max-h-[86vh] overflow-y-auto z-[10000]">
 
           <nav class="flex flex-col text-[15px] text-[#161616] px-5 md:px-8 py-3">
 
@@ -264,8 +274,8 @@ interface LanguageOption {
               }
             }
 
-            <button class="mobile-nav-item">Events</button>
-            <button class="mobile-nav-item">About</button>
+            <button class="mobile-nav-item" (click)="closeAllMenus()">Events</button>
+            <button class="mobile-nav-item" (click)="closeAllMenus()">About</button>
 
             <div class="py-5">
               <button class="w-full bg-[#0f62fe] text-white py-4 text-[15px] font-medium hover:bg-[#0043ce]">
@@ -281,8 +291,7 @@ interface LanguageOption {
       <!-- Desktop Mega Menu -->
       @if (openMenu !== '' && !isMobileMenuOpen) {
         <div
-          class="hidden xl:block absolute left-0 right-0 top-[50px] bg-white border-b border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[9998]"
-          (mouseleave)="closeMenu()"
+          class="hidden xl:block absolute left-0 right-0 top-[50px] bg-white border-b border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10000]"
         >
 
           <div class="max-w-[1480px] mx-auto px-8 xl:px-12 2xl:px-16">
@@ -306,7 +315,6 @@ interface LanguageOption {
                       <button
                         class="mega-rail-item"
                         [class.active-rail]="activeSection === section.key"
-                        (mouseenter)="setSection(section.key)"
                         (click)="setSection(section.key)"
                       >
                         {{ section.label }}
@@ -378,7 +386,7 @@ interface LanguageOption {
     }
 
     .desktop-nav-button:hover {
-      background: #f4f4f4;
+      background: #e0e0e0;
       color: #161616;
     }
 
@@ -404,7 +412,7 @@ interface LanguageOption {
     }
 
     .language-option:hover {
-      background: #f4f4f4;
+      background: #e0e0e0;
       color: #161616;
     }
 
@@ -436,7 +444,7 @@ interface LanguageOption {
     }
 
     .mega-rail-item:hover {
-      background: #f4f4f4;
+      background: #e0e0e0;
       color: #161616;
     }
 
@@ -534,7 +542,7 @@ interface LanguageOption {
     }
 
     .mobile-nav-item:hover {
-      background: #f4f4f4;
+      background: #e0e0e0;
     }
 
     .mobile-submenu {
@@ -586,7 +594,24 @@ interface LanguageOption {
   `]
 })
 export class Nav {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private elementRef: ElementRef
+  ) {}
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedInsideNav = this.elementRef.nativeElement.contains(event.target);
+
+    if (!clickedInsideNav) {
+      this.closeAllMenus();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.closeAllMenus();
+  }
 
   openMenu: MenuKey | '' = '';
   activeSection: SectionKey = '';
@@ -1085,19 +1110,8 @@ export class Nav {
   };
 
   goToMainSearch(): void {
-    this.closeMenu();
-    this.isLanguageOpen = false;
-    this.isMobileMenuOpen = false;
-
+    this.closeAllMenus();
     this.router.navigate(['/mainsearch']);
-  }
-
-  openTopMenu(menu: MenuKey): void {
-    if (!this.isMobileMenuOpen) {
-      this.isLanguageOpen = false;
-      this.openMenu = menu;
-      this.activeSection = this.megaMenus[menu].sections[0].key;
-    }
   }
 
   toggleMenu(menu: MenuKey): void {
@@ -1117,11 +1131,11 @@ export class Nav {
     this.activeSection = section;
   }
 
-  closeMenu(): void {
-    if (!this.isMobileMenuOpen) {
-      this.openMenu = '';
-      this.activeSection = '';
-    }
+  closeAllMenus(): void {
+    this.openMenu = '';
+    this.activeSection = '';
+    this.isLanguageOpen = false;
+    this.isMobileMenuOpen = false;
   }
 
   toggleMobileMenu(): void {

@@ -195,22 +195,22 @@ export class AusbildungSectionComponent {
     {
       id: 'sector-2',
       title: 'IT & Software',
-      imageUrl: '/assets/Aus8.webp'
+      imageUrl: '/assets/Aus2.webp'
     },
     {
       id: 'sector-3',
       title: 'Hotel & Hospitality',
-      imageUrl: '/assets/Aus8.webp'
+      imageUrl: '/assets/Aus3.webp'
     },
     {
       id: 'sector-4',
       title: 'Retail & Sales',
-      imageUrl: '/assets/Aus8.webp'
+      imageUrl: '/assets/Aus4.webp'
     },
     {
       id: 'sector-5',
       title: 'Culinary / Chef',
-      imageUrl: '/assets/Aus8.webp'
+      imageUrl: '/assets/Aus5.webp'
     },
     {
       id: 'sector-6',
