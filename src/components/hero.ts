@@ -40,13 +40,13 @@ import { CommonModule } from '@angular/common';
               [class.text-slate-900]="mode === 'employee'"
               [class.text-slate-500]="mode !== 'employee'"
               [class.hover:bg-slate-50]="mode !== 'employee'">
-              For Employee
+              For Candidate
             </button>
           </div>
 
           <!-- Heading -->
           <h1 class="max-w-[820px] text-4xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-semibold text-[#161616] leading-[1.08] tracking-[-0.045em] mb-5">
-            Your Career Pathway Platform for <br class="hidden sm:block"/>
+            Your Career Pathway Platform <br class="hidden sm:block"/>
             <span class="text-[#0f62fe] relative inline-block pb-1">
               Germany, Europe, Gulf
               <span class="absolute bottom-1 left-0 w-full h-[4px] bg-[#0f62fe]"></span>
@@ -55,13 +55,13 @@ import { CommonModule } from '@angular/common';
 
           <!-- Description -->
           <p class="text-[#525252] text-[15px] sm:text-base leading-relaxed mb-7 max-w-[680px] font-normal">
-            Explore Ausbildung programs, international jobs, study abroad options, German training and guided career support based on your country, qualification, language level, and target destination.
+             Explore Ausbildung programs, international jobs, study abroad options, German training and guided career support based on your country, qualification, language level, and target destination.
           </p>
 
           <!-- CTA Buttons -->
           <div class="flex flex-wrap items-center gap-4">
             <button class="bg-[#0f62fe] text-white px-8 py-3.5 rounded-none font-medium tracking-wide hover:bg-[#0043ce] transition-colors flex items-center gap-3 shadow-sm">
-              {{ mode === 'employer' ? 'Post Job' : 'Find Jobs' }}
+              {{ mode === 'employer' ? 'Hire Trainees' : 'Check Eligibility' }}
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
@@ -69,7 +69,7 @@ import { CommonModule } from '@angular/common';
             </button>
 
             <button class="bg-white border border-[#c6c6c6] text-[#161616] px-8 py-3.5 rounded-none font-medium tracking-wide hover:bg-[#f4f4f4] transition-colors shadow-sm">
-              {{ mode === 'employer' ? 'Access CV' : 'Upload CV' }}
+              {{ mode === 'employer' ? 'View Talent Pipeline' : 'Explore Sectors' }}
             </button>
           </div>
 
@@ -79,17 +79,19 @@ import { CommonModule } from '@angular/common';
         <div class="col-span-1 lg:col-span-7 xl:col-span-7 relative flex justify-center lg:justify-end self-center mt-6 lg:mt-0">
           <div class="relative w-[92%] sm:w-[78%] lg:w-full max-w-[640px]">
             <img
-              src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1000"
-              alt="Professionals in Healthcare, IT, and Education"
-              class="w-full h-[300px] lg:h-[430px] xl:h-[460px] object-cover rounded-none shadow-xl z-10 border border-[#e0e0e0]"
+              src="/assets/heroab.webp"
+              alt="Ausbildung candidates in Germany"
+              class="w-full h-[320px] lg:h-[460px] xl:h-[500px] object-cover object-center rounded-none shadow-xl z-10 border border-[#e0e0e0]"
+              loading="eager"
+              fetchpriority="high"
             />
 
-            <div class="absolute -bottom-5 -left-5 hidden lg:block bg-white border border-[#e0e0e0] shadow-lg px-5 py-4 max-w-[260px]">
+            <div class="absolute -bottom-5 -left-5 hidden lg:block bg-white border border-[#e0e0e0] shadow-lg px-5 py-4 max-w-[280px]">
               <p class="text-[12px] uppercase tracking-[0.16em] text-[#6f6f6f] font-semibold mb-1">
-                Guided Pathways
+                Ausbildung Germany
               </p>
               <p class="text-[15px] text-[#161616] leading-snug font-medium">
-                Jobs, Ausbildung, Study Abroad and German Training
+                Healthcare, IT, Hospitality, Retail, Culinary and Logistics pathways
               </p>
             </div>
           </div>
@@ -100,7 +102,7 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class HeroComponent {
-  mode: 'employer' | 'employee' = 'employer';
+  mode: 'employer' | 'employee' = 'employee';
 
   setMode(selectedMode: 'employer' | 'employee') {
     this.mode = selectedMode;

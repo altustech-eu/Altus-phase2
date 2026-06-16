@@ -27,7 +27,7 @@ interface ServiceCard {
   template: `
     <section class="font-main bg-white pt-10 pb-24">
 
-      <!-- Top Profile Card Carousel - Wireframe Style -->
+      <!-- Top Profile Card Carousel -->
       <div class="max-w-[1584px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-20">
         <div class="flex overflow-x-auto gap-5 lg:gap-6 xl:gap-7 pb-6 hide-scrollbar snap-x snap-mandatory">
 
@@ -42,7 +42,9 @@ interface ServiceCard {
                     <img
                       [src]="post.imageUrl"
                       [alt]="post.username"
-                      class="w-full h-full object-cover"
+                      class="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      (error)="imageError($event, post.imageUrl)"
                     />
 
                     <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
@@ -55,7 +57,9 @@ interface ServiceCard {
                     <img
                       [src]="post.imageUrl"
                       [alt]="post.username"
-                      class="w-full h-full object-cover"
+                      class="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      (error)="imageError($event, post.imageUrl)"
                     />
                   </div>
 
@@ -119,7 +123,7 @@ interface ServiceCard {
         </p>
       </div>
 
-      <!-- Service Cards Section - IBM Carbon Wide Container -->
+      <!-- Service Cards Section -->
       <div class="max-w-[1584px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 xl:gap-8">
 
@@ -217,48 +221,52 @@ export class HomeShowcaseComponent {
     });
   }
 
+  imageError(event: Event, imageUrl: string) {
+    console.error('Image failed to load:', imageUrl);
+  }
+
   socialPosts: SocialPostCard[] = [
     {
-      username: 'Student Ambassador',
+      username: 'Nurse Ambassador',
       verified: true,
       theme: 'yellow',
-      caption: 'Germany destination guide for Ausbildung, language training and student community support.',
-      imageUrl: 'https://images.pexels.com/photos/159306/construction-site-build-construction-work-159306.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'Germany healthcare pathway guidance from nursing candidates and student ambassadors.',
+      imageUrl: '/assets/NURSES/NURSE1.webp'
     },
     {
-      username: 'Career Mentor',
+      username: 'Healthcare Mentor',
       verified: true,
       theme: 'grey',
-      caption: 'Speak with mentors who understand study abroad, job search and relocation preparation.',
-      imageUrl: 'https://images.pexels.com/photos/8486972/pexels-photo-8486972.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'Speak with mentors who understand nursing, Ausbildung, German language and relocation preparation.',
+      imageUrl: '/assets/NURSES/NURSE2.webp'
     },
     {
-      username: 'Ausbildung Advisor',
+      username: 'Ausbildung Nurse Advisor',
       verified: true,
       theme: 'yellow',
-      caption: 'Explore training contracts, employer matching, interviews and visa readiness support.',
-      imageUrl: 'https://images.pexels.com/photos/8961065/pexels-photo-8961065.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'Explore healthcare Ausbildung, employer readiness, interviews, documentation and visa planning.',
+      imageUrl: '/assets/NURSES/NURSE3.webp'
     },
     {
-      username: 'Study Guide',
+      username: 'Germany Nursing Guide',
       verified: true,
       theme: 'yellow',
-      caption: 'Find university pathways, scholarship options, documentation support and admission guidance.',
-      imageUrl: 'https://images.pexels.com/photos/2760243/pexels-photo-2760243.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'Understand German language levels, healthcare career routes and long-term settlement planning.',
+      imageUrl: '/assets/NURSES/NURSE4.webp'
     },
     {
-      username: 'Job Coach',
+      username: 'Nursing Career Coach',
       verified: true,
       theme: 'grey',
-      caption: 'Get help with European CV, recruiter outreach, interview preparation and career planning.',
-      imageUrl: 'https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'Get support with nursing profile building, interview preparation and international career planning.',
+      imageUrl: '/assets/NURSES/NURSE5.webp'
     },
     {
-      username: 'German Trainer',
+      username: 'German Healthcare Trainer',
       verified: true,
       theme: 'yellow',
-      caption: 'A1 to B2 German learning support with speaking practice and exam preparation guidance.',
-      imageUrl: 'https://images.pexels.com/photos/8961071/pexels-photo-8961071.jpeg?auto=compress&cs=tinysrgb&w=600'
+      caption: 'A1 to B2 German learning support for healthcare, nursing and workplace communication.',
+      imageUrl: '/assets/NURSES/NURSE6.webp'
     }
   ];
 

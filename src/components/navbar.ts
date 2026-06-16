@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 type MenuKey = 'programs' | 'ausbildung' | 'jobs' | 'study-abroad' | 'tools' | 'pricing';
 type SectionKey = string;
@@ -34,10 +35,10 @@ interface LanguageOption {
     <header class="font-main bg-white sticky top-0 z-[9999] border-b border-[#e0e0e0]">
 
       <!-- Desktop Header -->
-      <div class="hidden xl:flex h-[50px] items-center bg-white">
+      <div class="hidden xl:flex h-[50px] items-center bg-white mx-auto px-6 2xl:px-10 max-w-[1584px]">
 
         <!-- Logo -->
-        <div class="h-full w-[230px] flex items-center px-8 border-r border-[#e0e0e0]">
+        <div class="h-full w-[220px] flex items-center px-5 border-r border-[#e0e0e0]">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-[#0f62fe] text-white flex items-center justify-center text-sm font-bold">
               A
@@ -59,6 +60,7 @@ interface LanguageOption {
               (click)="toggleMenu(item.key)"
             >
               {{ item.label }}
+
               <svg
                 class="w-4 h-4 transition-transform"
                 [class.rotate-180]="openMenu === item.key"
@@ -139,13 +141,17 @@ interface LanguageOption {
             }
           </div>
 
-          <button class="h-full w-[48px] flex items-center justify-center hover:bg-[#f4f4f4]" aria-label="Search">
+          <!-- Desktop Search Button -->
+          <button
+            class="h-full w-[48px] flex items-center justify-center hover:bg-[#f4f4f4]"
+            aria-label="Search"
+            (click)="goToMainSearch()"
+          >
             <svg class="w-[19px] h-[19px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.3-4.3"></path>
             </svg>
           </button>
-  
 
           <button class="h-full px-7 bg-[#0f62fe] text-white text-[14px] font-medium hover:bg-[#0043ce] transition-colors">
             Apply
@@ -155,7 +161,7 @@ interface LanguageOption {
       </div>
 
       <!-- Mobile Header -->
-      <div class="xl:hidden h-[58px] flex items-center justify-between px-5 bg-white border-b border-[#e0e0e0]">
+      <div class="xl:hidden h-[58px] flex items-center justify-between px-5 md:px-8 bg-white border-b border-[#e0e0e0]">
 
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-[#0f62fe] text-white flex items-center justify-center text-sm font-bold">
@@ -168,8 +174,11 @@ interface LanguageOption {
 
         <div class="flex items-center gap-4">
 
-          <!-- Mobile Language Selector -->
-          <button class="flex items-center gap-1 text-[#393939]" (click)="toggleLanguageDropdown()" aria-label="Language selector">
+          <button
+            class="flex items-center gap-1 text-[#393939]"
+            (click)="toggleLanguageDropdown()"
+            aria-label="Language selector"
+          >
             <svg
               class="w-[20px] h-[20px]"
               viewBox="0 0 24 24"
@@ -187,7 +196,8 @@ interface LanguageOption {
             <span class="text-[12px] font-medium">{{ selectedLanguage.short }}</span>
           </button>
 
-          <button aria-label="Search">
+          <!-- Mobile Search Button -->
+          <button aria-label="Search" (click)="goToMainSearch()">
             <svg class="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.3-4.3"></path>
@@ -203,7 +213,7 @@ interface LanguageOption {
 
       <!-- Mobile Language Dropdown -->
       @if (isLanguageOpen) {
-        <div class="xl:hidden absolute top-[58px] right-4 w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10000]">
+        <div class="xl:hidden absolute top-[58px] right-5 md:right-8 w-[220px] bg-white border border-[#e0e0e0] shadow-[0_8px_20px_rgba(0,0,0,0.12)] z-[10000]">
           @for (language of languages; track language.code) {
             <button
               class="language-option"
@@ -221,7 +231,7 @@ interface LanguageOption {
       @if (isMobileMenuOpen) {
         <div class="xl:hidden absolute top-[58px] left-0 right-0 bg-white shadow-2xl border-b border-[#e0e0e0] max-h-[86vh] overflow-y-auto z-[9999]">
 
-          <nav class="flex flex-col text-[15px] text-[#161616]">
+          <nav class="flex flex-col text-[15px] text-[#161616] px-5 md:px-8 py-3">
 
             @for (item of topMenus; track item.key) {
               <button class="mobile-nav-item" (click)="toggleMenu(item.key)">
@@ -257,7 +267,7 @@ interface LanguageOption {
             <button class="mobile-nav-item">Events</button>
             <button class="mobile-nav-item">About</button>
 
-            <div class="p-5">
+            <div class="py-5">
               <button class="w-full bg-[#0f62fe] text-white py-4 text-[15px] font-medium hover:bg-[#0043ce]">
                 Apply Now
               </button>
@@ -275,10 +285,9 @@ interface LanguageOption {
           (mouseleave)="closeMenu()"
         >
 
-          <div class="max-w-[1360px] mx-auto px-6 lg:px-10 xl:px-12">
+          <div class="max-w-[1480px] mx-auto px-8 xl:px-12 2xl:px-16">
             <div class="grid grid-cols-[330px_1fr] min-h-[520px]">
 
-              <!-- Left Main Heading Rail -->
               <aside class="border-r border-[#e0e0e0] bg-white flex flex-col justify-between">
 
                 <div>
@@ -314,8 +323,7 @@ interface LanguageOption {
 
               </aside>
 
-              <!-- Right Subheading Panel -->
-              <main class="bg-white px-10 py-8 overflow-y-auto max-h-[calc(100vh-52px)]">
+              <main class="bg-white px-12 xl:px-14 py-8 overflow-y-auto max-h-[calc(100vh-52px)]">
 
                 @for (section of megaMenus[openMenu].sections; track section.key) {
                   @if (activeSection === section.key) {
@@ -361,7 +369,7 @@ interface LanguageOption {
 
     .desktop-nav-button {
       height: 100%;
-      padding: 0 20px;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -515,8 +523,9 @@ interface LanguageOption {
 
     .mobile-nav-item {
       min-height: 52px;
-      padding: 0 20px;
-      border-bottom: 1px solid #e0e0e0;
+      padding: 0 16px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -530,13 +539,14 @@ interface LanguageOption {
 
     .mobile-submenu {
       background: #f4f4f4;
-      padding: 12px 22px;
+      padding: 12px 18px;
+      margin-bottom: 8px;
       display: flex;
       flex-direction: column;
       gap: 12px;
       font-size: 14px;
       color: #525252;
-      border-bottom: 1px solid #e0e0e0;
+      border: 1px solid #e0e0e0;
     }
 
     .mobile-section-title {
@@ -576,6 +586,8 @@ interface LanguageOption {
   `]
 })
 export class Nav {
+  constructor(private router: Router) {}
+
   openMenu: MenuKey | '' = '';
   activeSection: SectionKey = '';
   isMobileMenuOpen = false;
@@ -810,11 +822,23 @@ export class Nav {
             },
             {
               heading: 'Specialized Training',
-              links: ['Interview Preparation', 'Cross Cultural Training', 'Adaptation Training', 'Workplace Readiness', 'Soft Skills']
+              links: [
+                'Interview Preparation',
+                'Cross Cultural Training',
+                'Adaptation Training',
+                'Workplace Readiness',
+                'Soft Skills'
+              ]
             },
             {
               heading: 'Career Training',
-              links: ['CV Building', 'LinkedIn Optimization', 'SOP Writing', 'Motivation Letter', 'Portfolio Development']
+              links: [
+                'CV Building',
+                'LinkedIn Optimization',
+                'SOP Writing',
+                'Motivation Letter',
+                'Portfolio Development'
+              ]
             }
           ]
         }
@@ -1014,11 +1038,19 @@ export class Nav {
           groups: [
             {
               heading: 'Discovery Tools',
-              links: ['Career Pathway Finder', 'AI Career Advisor', 'Program Eligibility Checker']
+              links: [
+                'Career Pathway Finder',
+                'AI Career Advisor',
+                'Program Eligibility Checker'
+              ]
             },
             {
               heading: 'Financial Tools',
-              links: ['Salary & ROI Explorer', 'Timeline Explorer', 'Cost of Living Calculator']
+              links: [
+                'Salary & ROI Explorer',
+                'Timeline Explorer',
+                'Cost of Living Calculator'
+              ]
             }
           ]
         }
@@ -1040,7 +1072,11 @@ export class Nav {
             },
             {
               heading: 'Payment Options',
-              links: ['Flexible Payment Options', 'Service Comparison', 'Configure Package']
+              links: [
+                'Flexible Payment Options',
+                'Service Comparison',
+                'Configure Package'
+              ]
             }
           ]
         }
@@ -1048,7 +1084,15 @@ export class Nav {
     }
   };
 
-  openTopMenu(menu: MenuKey) {
+  goToMainSearch(): void {
+    this.closeMenu();
+    this.isLanguageOpen = false;
+    this.isMobileMenuOpen = false;
+
+    this.router.navigate(['/mainsearch']);
+  }
+
+  openTopMenu(menu: MenuKey): void {
     if (!this.isMobileMenuOpen) {
       this.isLanguageOpen = false;
       this.openMenu = menu;
@@ -1056,7 +1100,7 @@ export class Nav {
     }
   }
 
-  toggleMenu(menu: MenuKey) {
+  toggleMenu(menu: MenuKey): void {
     this.isLanguageOpen = false;
 
     if (this.openMenu === menu) {
@@ -1069,18 +1113,18 @@ export class Nav {
     this.activeSection = this.megaMenus[menu].sections[0].key;
   }
 
-  setSection(section: SectionKey) {
+  setSection(section: SectionKey): void {
     this.activeSection = section;
   }
 
-  closeMenu() {
+  closeMenu(): void {
     if (!this.isMobileMenuOpen) {
       this.openMenu = '';
       this.activeSection = '';
     }
   }
 
-  toggleMobileMenu() {
+  toggleMobileMenu(): void {
     this.isLanguageOpen = false;
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
 
@@ -1090,7 +1134,7 @@ export class Nav {
     }
   }
 
-  toggleLanguageDropdown() {
+  toggleLanguageDropdown(): void {
     this.isLanguageOpen = !this.isLanguageOpen;
 
     if (this.isLanguageOpen) {
@@ -1100,7 +1144,7 @@ export class Nav {
     }
   }
 
-  selectLanguage(language: LanguageOption) {
+  selectLanguage(language: LanguageOption): void {
     this.selectedLanguage = language;
     this.isLanguageOpen = false;
   }
