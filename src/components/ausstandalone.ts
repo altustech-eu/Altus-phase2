@@ -187,6 +187,12 @@ interface PersonaContext {
               </p>
             </div>
 
+            @if (submitError) {
+              <div class="mb-4 rounded-[12px] border border-red-200 bg-red-50 px-4 py-3 text-[12px] font-bold text-red-700">
+                {{ submitError }}
+              </div>
+            }
+
             <!-- Step Card -->
             <div class="rounded-[16px] border border-[#dbe4f0] bg-white p-5 shadow-sm md:p-6">
 
@@ -226,22 +232,22 @@ interface PersonaContext {
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
 
                   <label class="field-label">
-                    Full Name
+                    Full Name *
                     <input class="form-input" placeholder="Your full name" [(ngModel)]="form.fullName" />
                   </label>
 
                   <label class="field-label">
-                    WhatsApp / Mobile
+                    WhatsApp / Mobile *
                     <input class="form-input" placeholder="+91 XXXXXXXXXX" [(ngModel)]="form.mobile" />
                   </label>
 
                   <label class="field-label md:col-span-2">
-                    Email Address
+                    Email Address *
                     <input class="form-input" placeholder="your@email.com" [(ngModel)]="form.email" />
                   </label>
 
                   <label class="field-label">
-                    Country of Residence
+                    Country of Residence *
                     <select class="form-input" [(ngModel)]="form.country">
                       <option value="">Select country</option>
                       <option>India</option>
@@ -254,7 +260,7 @@ interface PersonaContext {
                   </label>
 
                   <label class="field-label">
-                    Nationality
+                    Nationality *
                     <select class="form-input" [(ngModel)]="form.nationality">
                       <option value="">Select nationality</option>
                       <option>Indian</option>
@@ -271,7 +277,7 @@ interface PersonaContext {
                   </label>
 
                   <label class="field-label">
-                    City
+                    City *
                     <input class="form-input" placeholder="e.g. Chennai" [(ngModel)]="form.city" />
                   </label>
 
@@ -339,7 +345,7 @@ interface PersonaContext {
 
                   <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <label class="field-label">
-                      Highest Qualification
+                      Highest Qualification *
                       <select class="form-input" [(ngModel)]="form.qualification">
                         <option value="">Select</option>
                         <option>10th Standard</option>
@@ -351,7 +357,7 @@ interface PersonaContext {
                     </label>
 
                     <label class="field-label">
-                      Stream / Subject
+                      Stream / Subject *
                       <select class="form-input" [(ngModel)]="form.stream">
                         <option value="">Select</option>
                         <option>Healthcare</option>
@@ -382,7 +388,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">Current Status</p>
+                    <p class="section-label">Current Status *</p>
                     <div class="chip-grid">
                       @for (status of currentStatuses; track status) {
                         <button
@@ -398,7 +404,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">German Language Level</p>
+                    <p class="section-label">German Language Level *</p>
 
                     <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
                       @for (level of germanLevels; track level.title) {
@@ -420,7 +426,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">Passport Status</p>
+                    <p class="section-label">Passport Status *</p>
 
                     <div class="chip-grid">
                       @for (passport of passportStatuses; track passport) {
@@ -457,7 +463,7 @@ interface PersonaContext {
 
                   <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <label class="field-label">
-                      {{ getDynamicFieldOneLabel() }}
+                      {{ getDynamicFieldOneLabel() }} *
                       <select class="form-input" [(ngModel)]="form.dynamicOne">
                         <option value="">Select</option>
                         @for (option of getDynamicFieldOneOptions(); track option) {
@@ -467,7 +473,7 @@ interface PersonaContext {
                     </label>
 
                     <label class="field-label">
-                      {{ getDynamicFieldTwoLabel() }}
+                      {{ getDynamicFieldTwoLabel() }} *
                       <select class="form-input" [(ngModel)]="form.dynamicTwo">
                         <option value="">Select</option>
                         @for (option of getDynamicFieldTwoOptions(); track option) {
@@ -478,7 +484,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">{{ getDynamicChipOneLabel() }}</p>
+                    <p class="section-label">{{ getDynamicChipOneLabel() }} *</p>
 
                     <div class="chip-grid">
                       @for (item of getDynamicChipOneOptions(); track item) {
@@ -495,7 +501,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">{{ getDynamicChipTwoLabel() }}</p>
+                    <p class="section-label">{{ getDynamicChipTwoLabel() }} *</p>
 
                     <div class="chip-grid">
                       @for (item of getDynamicChipTwoOptions(); track item) {
@@ -512,7 +518,7 @@ interface PersonaContext {
                   </div>
 
                   <div>
-                    <p class="section-label">How soon do you want to start?</p>
+                    <p class="section-label">How soon do you want to start? *</p>
 
                     <div class="chip-grid">
                       @for (timeline of startTimelines; track timeline) {
@@ -539,17 +545,19 @@ interface PersonaContext {
                   type="button"
                   class="h-[42px] rounded-[10px] border border-[#dbe4f0] bg-white px-5 text-[13px] font-bold text-[#111827] hover:bg-[#f8fafc]"
                   (click)="back()"
+                  [disabled]="isSubmitting"
                 >
                   ← Back
                 </button>
 
                 <button
                   type="button"
-                  class="h-[42px] flex-1 rounded-[10px] px-6 text-[13px] font-bold text-white transition"
+                  class="h-[42px] flex-1 rounded-[10px] px-6 text-[13px] font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-60"
+                  [disabled]="isSubmitting"
                   [ngClass]="currentStep === 5 ? 'bg-[#0f62fe] hover:bg-[#0043ce]' : 'bg-[#5f8df7] hover:bg-[#0f62fe]'"
                   (click)="next()"
                 >
-                  {{ currentStep === 5 ? 'Submit & See My Pathway' : 'Continue' }}
+                  {{ isSubmitting ? 'Submitting Lead...' : currentStep === 5 ? 'Submit & See My Pathway' : 'Continue' }}
                   <span class="ml-2">→</span>
                 </button>
               </div>
@@ -576,7 +584,10 @@ interface PersonaContext {
             </h1>
 
             <p class="mt-3 text-[12px] font-semibold text-[#64748b]">
-              Lead ID: <span class="text-[#0f172a]">ALT-{{ getLeadPrefix() }}-2026-143143</span>
+              Lead ID:
+              <span class="text-[#0f172a]">
+                {{ submittedLeadId || ('ALT-' + getLeadPrefix()) }}
+              </span>
             </p>
           </div>
 
@@ -815,9 +826,15 @@ interface PersonaContext {
 export class PathwayProcessComponent {
   private router = inject(Router);
 
+  private readonly leadCaptureUrl = 'https://script.google.com/macros/s/AKfycbxQfccjsfl67jyqNPN03AToE38pjem2QwFJV4sLOYElU4-KB5Zc9JH6e0734oUmSvzeug/exec';
+
   screen: Screen = 'intro';
   currentStep = 1;
   selectedPersona = '';
+
+  isSubmitting = false;
+  submitError = '';
+  submittedLeadId = '';
 
   form = this.emptyForm();
 
@@ -898,16 +915,24 @@ export class PathwayProcessComponent {
   }
 
   goToStep(step: number) {
-    this.currentStep = step;
+    if (step < this.currentStep || this.validateCurrentStep()) {
+      this.currentStep = step;
+    }
   }
 
   next() {
+    this.submitError = '';
+
+    if (!this.validateCurrentStep()) {
+      return;
+    }
+
     if (this.currentStep < 5) {
       this.currentStep++;
       return;
     }
 
-    this.screen = 'result';
+    this.submitLead();
   }
 
   back() {
@@ -923,6 +948,8 @@ export class PathwayProcessComponent {
     this.screen = 'intro';
     this.currentStep = 1;
     this.selectedPersona = '';
+    this.submittedLeadId = '';
+    this.submitError = '';
     this.form = this.emptyForm();
   }
 
@@ -961,6 +988,173 @@ export class PathwayProcessComponent {
       dynamicChipTwo: '',
       startTimeline: ''
     };
+  }
+
+  validateCurrentStep(): boolean {
+    if (this.currentStep === 1 && !this.selectedPersona) {
+      alert('Please select your profile type.');
+      return false;
+    }
+
+    if (this.currentStep === 2) {
+      if (!this.form.fullName || !this.form.mobile || !this.form.email) {
+        alert('Please fill Full Name, Mobile, and Email.');
+        return false;
+      }
+
+      if (!this.form.country || !this.form.nationality || !this.form.city) {
+        alert('Please complete Country, Nationality, and City.');
+        return false;
+      }
+
+      if (!this.isValidEmail(this.form.email)) {
+        alert('Please enter a valid email address.');
+        return false;
+      }
+
+      if (!this.isValidMobile(this.form.mobile)) {
+        alert('Please enter a valid WhatsApp / mobile number.');
+        return false;
+      }
+
+      if (!this.form.consent) {
+        alert('Please provide consent to continue.');
+        return false;
+      }
+    }
+
+    if (this.currentStep === 3 && !this.form.goal) {
+      alert('Please select your main goal.');
+      return false;
+    }
+
+    if (this.currentStep === 4) {
+      if (!this.form.qualification || !this.form.stream || !this.form.currentStatus) {
+        alert('Please complete Qualification, Stream, and Current Status.');
+        return false;
+      }
+
+      if (!this.form.germanLevel || !this.form.passportStatus) {
+        alert('Please select German Level and Passport Status.');
+        return false;
+      }
+    }
+
+    if (this.currentStep === 5) {
+      if (!this.form.dynamicOne || !this.form.dynamicTwo) {
+        alert('Please complete the personalised preference fields.');
+        return false;
+      }
+
+      if (!this.form.dynamicChipOne || !this.form.dynamicChipTwo || !this.form.startTimeline) {
+        alert('Please complete all profile preference selections.');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  isValidEmail(email: string): boolean {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail);
+  }
+
+  isValidMobile(mobile: string): boolean {
+    const cleanMobile = (mobile || '').trim();
+    return /^[+0-9\s-]{8,18}$/.test(cleanMobile);
+  }
+
+  generateLeadId(): string {
+    const prefix = this.getLeadPrefix();
+    const now = new Date();
+
+    const datePart = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, '0'),
+      String(now.getDate()).padStart(2, '0')
+    ].join('');
+
+    const timePart = [
+      String(now.getHours()).padStart(2, '0'),
+      String(now.getMinutes()).padStart(2, '0'),
+      String(now.getSeconds()).padStart(2, '0')
+    ].join('');
+
+    return `ALT-${prefix}-${datePart}-${timePart}`;
+  }
+
+  buildLeadPayload() {
+    const context = this.getPersonaContext();
+    const leadId = this.generateLeadId();
+
+    return {
+      leadId,
+      persona: this.selectedPersona || 'unsure',
+      leadTag: context.leadTag,
+      priority: this.getCounsellingPriority(),
+      profileScore: this.getProfileScore(),
+
+      fullName: this.form.fullName,
+      mobile: this.form.mobile,
+      email: this.form.email,
+      country: this.form.country,
+      nationality: this.form.nationality,
+      state: this.form.state,
+      city: this.form.city,
+      language: this.form.language,
+      ageGroup: this.form.ageGroup,
+
+      goal: this.form.goal,
+      qualification: this.form.qualification,
+      stream: this.form.stream,
+      yearCompleted: this.form.yearCompleted,
+      score: this.form.score,
+      currentStatus: this.form.currentStatus,
+      germanLevel: this.form.germanLevel,
+      passportStatus: this.form.passportStatus,
+
+      dynamicOne: this.form.dynamicOne,
+      dynamicTwo: this.form.dynamicTwo,
+      dynamicChipOne: this.form.dynamicChipOne,
+      dynamicChipTwo: this.form.dynamicChipTwo,
+      startTimeline: this.form.startTimeline,
+
+      assignedDesk: context.desk,
+      recommendation: context.recommendation,
+      consent: this.form.consent,
+      source: 'AltusCareer Career Pathway Assessment'
+    };
+  }
+
+  submitLead() {
+    if (this.isSubmitting) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.submitError = '';
+
+    const payload = this.buildLeadPayload();
+    this.submittedLeadId = payload.leadId;
+    const payloadText = JSON.stringify(payload);
+
+    fetch(this.leadCaptureUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'text/plain;charset=UTF-8'
+      },
+      body: payloadText
+    }).catch((error) => {
+      console.error('Background lead submission failed:', error);
+    });
+
+    setTimeout(() => {
+      this.isSubmitting = false;
+      this.router.navigate(['/']);
+    }, 800);
   }
 
   getProfileScore(): number {
@@ -1051,31 +1245,66 @@ export class PathwayProcessComponent {
   handleFinalAction(action: string) {
     const cleanedAction = action.toLowerCase();
 
+    const routes: Record<string, string> = {
+      'book student counselling': '/book-counselling/study-abroad',
+      'download germany guide': '/downloads/germany-study-guide',
+      'compare universities': '/compare/universities',
+
+      'upload cv': '/candidate/upload-cv',
+      'book job counselling': '/book-counselling/jobs',
+      'check salary range': '/tools/salary-calculator',
+
+      'book ausbildung counselling': '/book-counselling/ausbildung',
+      'start german demo class': '/german/demo-class',
+      'check eligibility': '/tools/ausbildung-eligibility',
+      'download ausbildung guide': '/downloads/ausbildung-guide',
+
+      'book german demo class': '/german/demo-class',
+      'take level test': '/german/level-test',
+      'view a1-b2 batches': '/german/batches',
+      'talk to trainer': '/german/talk-to-trainer',
+
+      'book parent counselling': '/book-counselling/parent',
+      'download parent guide': '/downloads/parent-guide',
+      'compare pathways': '/compare/pathways',
+
+      'apply as partner': '/partners/apply',
+      'download partner deck': '/downloads/partner-deck',
+      'schedule partner call': '/partners/schedule-call',
+      'view commission model': '/partners/commission-model',
+
+      'submit hiring requirement': '/employers/hiring-requirement',
+      'schedule employer call': '/employers/schedule-call',
+      'view recruitment process': '/employers/recruitment-process',
+      'request candidate pipeline': '/employers/candidate-pipeline',
+
+      'book discovery call': '/book-counselling/discovery',
+      'take career assessment': '/tools/career-assessment'
+    };
+
     if (cleanedAction.includes('whatsapp')) {
-      window.open('https://wa.me/917075764500', '_blank');
+      const message = encodeURIComponent(
+        `Hi AltusCareer, I completed the Career Pathway Assessment. My Lead ID is ${this.submittedLeadId}. Please guide me.`
+      );
+
+      window.open(`https://wa.me/917075764500?text=${message}`, '_blank');
       return;
     }
 
-    if (cleanedAction.includes('download')) {
-      alert('Guide download will be connected here.');
+    const matchedRoute = routes[cleanedAction];
+
+    if (matchedRoute) {
+      this.router.navigate([matchedRoute], {
+        queryParams: {
+          leadId: this.submittedLeadId,
+          persona: this.selectedPersona,
+          priority: this.getCounsellingPriority()
+        }
+      });
       return;
     }
 
-    if (cleanedAction.includes('upload')) {
-      alert('Document upload page will be connected here.');
-      return;
-    }
-
-    if (
-      cleanedAction.includes('counselling') ||
-      cleanedAction.includes('call') ||
-      cleanedAction.includes('demo')
-    ) {
-      alert('Appointment booking page will be connected here.');
-      return;
-    }
-
-    alert('This action will be connected to the next workflow.');
+    alert('This workflow will be connected to the next process page.');
   }
 
   getStepEyebrow(): string {
