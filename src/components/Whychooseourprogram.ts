@@ -6,7 +6,7 @@ interface StudyProgram {
   title: string;
   faculty: string;
   icon: string;
-  color: string;
+  accentColor: string;
 }
 
 @Component({
@@ -14,148 +14,144 @@ interface StudyProgram {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="font-main bg-white py-12 lg:py-16 overflow-hidden">
+    <section class="font-main bg-white py-10 lg:py-14 overflow-hidden">
 
       <!-- Heading -->
-      <div class="max-w-[1584px] mx-auto px-6 lg:px-12 xl:px-16 2xl:px-20 mb-8">
-        <h2 class="text-[30px] lg:text-[42px] font-semibold text-center text-[#161616] tracking-[-0.04em] leading-tight">
-          Choose Your Study Programs
+      <div class="max-w-[1584px] mx-auto px-6 lg:px-10 xl:px-12 2xl:px-16 mb-10">
+        <h2 class="text-[34px] lg:text-[38px] font-bold text-[#000000] tracking-[-0.035em] leading-tight">
+          Courses
         </h2>
       </div>
 
       <!-- Carousel Area -->
-      <div class="max-w-[1584px] mx-auto px-6 lg:px-12 xl:px-16 2xl:px-20 relative">
+      <div class="max-w-[1584px] mx-auto px-6 lg:px-10 xl:px-12 2xl:px-16 relative">
 
-        <div class="relative min-h-[300px]">
+        <div class="relative">
 
-          <!-- Dark Left Panel -->
-          <div class="absolute left-0 top-0 bottom-0 w-[260px] lg:w-[320px] bg-[#6f6f6f] hidden md:flex flex-col items-center justify-center z-0">
+          <!-- Cards Track -->
+          <div
+            #carouselTrack
+            class="flex gap-10 overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth px-14"
+            (scroll)="onCarouselScroll()"
+          >
 
-            <!-- Arrows -->
-            <div class="flex flex-col gap-3 mb-8">
-
-              <!-- Next -->
-              <button
-                class="carousel-arrow"
-                [class.disabled-arrow]="isNextDisabled"
-                [disabled]="isNextDisabled"
-                (click)="nextSlide()"
-                aria-label="Next study program"
+            @for (program of programs; track program.id; let i = $index) {
+              <article
+                class="course-card snap-start"
+                [class.active-card]="activeIndex === i"
+                (click)="selectProgram(i)"
               >
-                <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                  <path d="M5 12h14"></path>
-                  <path d="M13 6l6 6-6 6"></path>
-                </svg>
-              </button>
 
-              <!-- Previous -->
-              <button
-                class="carousel-arrow"
-                [class.disabled-arrow]="isPrevDisabled"
-                [disabled]="isPrevDisabled"
-                (click)="prevSlide()"
-                aria-label="Previous study program"
-              >
-                <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                  <path d="M19 12H5"></path>
-                  <path d="M11 6l-6 6 6 6"></path>
-                </svg>
-              </button>
-            </div>
+                <!-- Course Title -->
+                <div>
+                  <h3 class="course-title">
+                    {{ program.title }}
+                  </h3>
+                </div>
 
-            <!-- Counter -->
-            <div class="text-white text-[22px] font-medium tracking-wide">
-              {{ currentCounter }}
-            </div>
+                <!-- Faculty Block -->
+                <div class="faculty-block">
 
-            <div class="text-white/70 text-[12px] mt-2 tracking-wide">
-              / {{ totalCounter }}
-            </div>
+                  <!-- Faculty Seal / Icon -->
+                  <div class="faculty-seal">
+                    <span class="faculty-seal-inner">
+                      {{ program.icon }}
+                    </span>
+                  </div>
+
+                  <div>
+                    <p class="faculty-label">
+                      Faculty of
+                    </p>
+
+                    <p class="faculty-name">
+                      {{ program.faculty }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Bottom Accent Line -->
+                <div
+                  class="bottom-accent"
+                  [style.background]="program.accentColor"
+                ></div>
+
+              </article>
+            }
 
           </div>
 
-          <!-- Cards Track -->
-          <div class="relative z-10 md:ml-[190px] lg:ml-[240px] pt-12 pb-10">
-
-            <div
-              #carouselTrack
-              class="flex gap-5 overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
-              (scroll)="onCarouselScroll()"
+          <!-- Desktop Left Arrow -->
+          <button
+            type="button"
+            class="desktop-prev-arrow"
+            [class.disabled-arrow]="isPrevDisabled"
+            [disabled]="isPrevDisabled"
+            (click)="prevSlide()"
+            aria-label="Previous course"
+          >
+            <svg
+              class="w-[18px] h-[18px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
 
-              @for (program of programs; track program.id; let i = $index) {
-                <article
-                  class="program-card snap-start"
-                  [class.active-card]="activeIndex === i"
-                  (click)="selectProgram(i)"
-                >
+          <!-- Desktop Right Arrow -->
+          <button
+            type="button"
+            class="desktop-next-arrow"
+            [class.disabled-arrow]="isNextDisabled"
+            [disabled]="isNextDisabled"
+            (click)="nextSlide()"
+            aria-label="Next course"
+          >
+            <svg
+              class="w-[18px] h-[18px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
 
-                  <!-- Title -->
-                  <div class="min-h-[58px] flex items-start">
-                    <h3 class="text-[13px] font-medium text-[#161616] leading-snug uppercase">
-                      {{ program.title }}
-                    </h3>
-                  </div>
+          <!-- Mobile Controls -->
+          <div class="md:hidden flex items-center justify-center gap-4 mt-8">
+            <button
+              type="button"
+              class="mobile-carousel-arrow"
+              [class.disabled-arrow]="isPrevDisabled"
+              [disabled]="isPrevDisabled"
+              (click)="prevSlide()"
+              aria-label="Previous course"
+            >
+              ←
+            </button>
 
-                  <!-- Faculty -->
-                  <div class="flex items-center gap-2 mt-4">
-                    <div
-                      class="w-[24px] h-[24px] rounded-full flex items-center justify-center"
-                      [style.background]="program.color"
-                    >
-                      <span class="text-white text-[11px] font-semibold">
-                        {{ program.icon }}
-                      </span>
-                    </div>
-
-                    <div>
-                      <p class="text-[10px] text-[#6f6f6f] leading-none mb-1">
-                        Faculty of
-                      </p>
-                      <p class="text-[11px] font-semibold text-[#161616] leading-none">
-                        {{ program.faculty }}
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Bottom Accent -->
-                  <div
-                    class="absolute left-0 right-0 bottom-0 h-[3px]"
-                    [style.background]="activeIndex === i ? '#0f62fe' : '#78a9ff'"
-                  ></div>
-
-                </article>
-              }
-
+            <div class="text-[14px] text-[#525252] font-medium">
+              {{ currentCounter }} / {{ totalCounter }}
             </div>
 
-            <!-- Mobile Arrows -->
-            <div class="md:hidden flex items-center justify-center gap-4 mt-6">
-              <button
-                class="mobile-carousel-arrow"
-                [class.disabled-arrow]="isPrevDisabled"
-                [disabled]="isPrevDisabled"
-                (click)="prevSlide()"
-                aria-label="Previous study program"
-              >
-                ←
-              </button>
-
-              <div class="text-[14px] text-[#525252] font-medium">
-                {{ currentCounter }} / {{ totalCounter }}
-              </div>
-
-              <button
-                class="mobile-carousel-arrow"
-                [class.disabled-arrow]="isNextDisabled"
-                [disabled]="isNextDisabled"
-                (click)="nextSlide()"
-                aria-label="Next study program"
-              >
-                →
-              </button>
-            </div>
-
+            <button
+              type="button"
+              class="mobile-carousel-arrow"
+              [class.disabled-arrow]="isNextDisabled"
+              [disabled]="isNextDisabled"
+              (click)="nextSlide()"
+              aria-label="Next course"
+            >
+              →
+            </button>
           </div>
 
         </div>
@@ -169,71 +165,195 @@ interface StudyProgram {
       font-family: 'Poppins', Helvetica, Arial, sans-serif;
     }
 
-    .carousel-arrow {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
+    .course-card {
+      position: relative;
+      width: 345px;
+      min-width: 345px;
+      height: 338px;
       background: #ffffff;
-      color: #525252;
+      border: 1px solid #f3f3f3;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      padding: 72px 22px 26px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: none;
+    }
+
+    .active-card {
+      transform: none;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      border-color: #f3f3f3;
+    }
+
+    .course-title {
+      font-size: 34px;
+      font-weight: 400;
+      color: #000000;
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      text-transform: none;
+      max-width: 280px;
+    }
+
+    .faculty-block {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-top: auto;
+      padding-bottom: 8px;
+    }
+
+    .faculty-seal {
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 2px dashed #8ab6e8;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      color: #2f80c8;
+      background: #ffffff;
+      flex-shrink: 0;
     }
 
-    .carousel-arrow:hover {
+    .faculty-seal-inner {
+      width: 31px;
+      height: 31px;
+      border-radius: 999px;
+      border: 1px solid #8ab6e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #2f80c8;
+      line-height: 1;
+    }
+
+    .faculty-label {
+      font-size: 24px;
+      font-weight: 400;
+      color: #000000;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin: 0 0 4px;
+    }
+
+    .faculty-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #000000;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      margin: 0;
+      max-width: 220px;
+    }
+
+    .bottom-accent {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+    }
+
+    .desktop-prev-arrow,
+    .desktop-next-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: #111827;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+      z-index: 20;
+    }
+
+    .desktop-prev-arrow {
+      left: -4px;
+    }
+
+    .desktop-next-arrow {
+      right: -4px;
+    }
+
+    .desktop-prev-arrow:hover,
+    .desktop-next-arrow:hover {
       background: #0f62fe;
       color: #ffffff;
-      transform: translateX(2px);
+      border-color: #0f62fe;
+      box-shadow: 0 14px 32px rgba(15, 98, 254, 0.28);
+    }
+
+    .desktop-prev-arrow:active,
+    .desktop-next-arrow:active {
+      transform: translateY(-50%) scale(0.94);
+      box-shadow: 0 8px 18px rgba(15, 98, 254, 0.22);
+    }
+
+    .desktop-prev-arrow:focus-visible,
+    .desktop-next-arrow:focus-visible {
+      outline: 3px solid rgba(15, 98, 254, 0.28);
+      outline-offset: 3px;
     }
 
     .mobile-carousel-arrow {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border-radius: 999px;
-      background: #f4f4f4;
-      color: #161616;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: #111827;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 18px;
-      transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
     }
 
     .mobile-carousel-arrow:hover {
       background: #0f62fe;
       color: #ffffff;
+      border-color: #0f62fe;
+      box-shadow: 0 12px 26px rgba(15, 98, 254, 0.25);
+    }
+
+    .mobile-carousel-arrow:active {
+      transform: scale(0.94);
+    }
+
+    .mobile-carousel-arrow:focus-visible {
+      outline: 3px solid rgba(15, 98, 254, 0.28);
+      outline-offset: 3px;
     }
 
     .disabled-arrow {
       opacity: 0.35;
       cursor: not-allowed;
       pointer-events: none;
-    }
-
-    .program-card {
-      position: relative;
-      width: 165px;
-      min-width: 165px;
-      height: 150px;
-      background: #ffffff;
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-      padding: 28px 16px 18px;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      cursor: pointer;
-    }
-
-    .program-card:hover {
-      transform: translateY(-4px);
-      border-color: #78a9ff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    }
-
-    .active-card {
-      border-color: #0f62fe;
-      box-shadow: 0 10px 28px rgba(15, 98, 254, 0.18);
-      transform: translateY(-4px);
+      box-shadow: none;
     }
 
     .hide-scrollbar {
@@ -245,11 +365,43 @@ interface StudyProgram {
       display: none;
     }
 
-    @media (min-width: 1024px) {
-      .program-card {
-        width: 180px;
-        min-width: 180px;
-        height: 160px;
+    @media (min-width: 768px) {
+      .desktop-prev-arrow,
+      .desktop-next-arrow {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .course-card {
+        width: 292px;
+        min-width: 292px;
+        height: 300px;
+        padding: 56px 20px 24px;
+      }
+
+      .course-title {
+        font-size: 29px;
+      }
+
+      .faculty-label,
+      .faculty-name {
+        font-size: 20px;
+      }
+
+      .faculty-block {
+        gap: 16px;
+      }
+
+      .faculty-seal {
+        width: 46px;
+        height: 46px;
+      }
+
+      .faculty-seal-inner {
+        width: 27px;
+        height: 27px;
+        font-size: 11px;
       }
     }
   `]
@@ -265,56 +417,56 @@ export class StudyProgramsComponent {
       title: 'Odontology',
       faculty: 'Odontology',
       icon: 'O',
-      color: '#0f62fe'
+      accentColor: '#20d5c4'
     },
     {
       id: 'p2',
-      title: 'Pharmacy',
+      title: 'PHARMACY',
       faculty: 'Pharmacy',
       icon: 'P',
-      color: '#4589ff'
+      accentColor: '#c74e79'
     },
     {
       id: 'p3',
-      title: 'Veterinary Medicine',
-      faculty: 'Veterinary Medicine',
+      title: 'VETERINARY MEDICINE',
+      faculty: 'Veterinary medicine',
       icon: 'V',
-      color: '#0f62fe'
+      accentColor: '#5c93d5'
     },
     {
       id: 'p4',
-      title: 'Odontology',
-      faculty: 'Odontology',
-      icon: 'O',
-      color: '#0f62fe'
-    },
-    {
-      id: 'p5',
-      title: 'Pharmacy',
-      faculty: 'Pharmacy',
-      icon: 'P',
-      color: '#4589ff'
-    },
-    {
-      id: 'p6',
       title: 'Medicine',
       faculty: 'Medicine',
       icon: 'M',
-      color: '#0f62fe'
+      accentColor: '#20d5c4'
     },
     {
-      id: 'p7',
+      id: 'p5',
       title: 'Nursing',
       faculty: 'Healthcare',
       icon: 'N',
-      color: '#4589ff'
+      accentColor: '#c74e79'
     },
     {
-      id: 'p8',
+      id: 'p6',
       title: 'Biomedical Science',
       faculty: 'Science',
       icon: 'B',
-      color: '#0f62fe'
+      accentColor: '#5c93d5'
+    },
+    {
+      id: 'p7',
+      title: 'Public Health',
+      faculty: 'Health Sciences',
+      icon: 'H',
+      accentColor: '#20d5c4'
+    },
+    {
+      id: 'p8',
+      title: 'Physiotherapy',
+      faculty: 'Rehabilitation',
+      icon: 'R',
+      accentColor: '#c74e79'
     }
   ];
 

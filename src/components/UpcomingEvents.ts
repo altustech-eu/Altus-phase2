@@ -6,10 +6,10 @@ type ResourceTab = 'blogs' | 'insights' | 'events';
 interface MagazineArticle {
   id: string;
   image: string;
-  date: string;
-  tag: string;
+  category: string;
   title: string;
-  readTime: string;
+  authorName: string;
+  authorImage: string;
 }
 
 interface GalleryPerson {
@@ -81,13 +81,13 @@ interface GalleryPerson {
           </div>
 
           <!-- Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
 
             @for (article of activeArticles; track article.id) {
-              <article class="bg-white overflow-hidden flex flex-col shadow-sm border border-[#e0e0e0] hover:shadow-md transition-shadow group cursor-pointer">
+              <article class="resource-card group cursor-pointer">
 
                 <!-- Image -->
-                <div class="h-[175px] overflow-hidden">
+                <div class="resource-card-image">
                   <img
                     [src]="article.image"
                     [alt]="article.title"
@@ -96,44 +96,28 @@ interface GalleryPerson {
                 </div>
 
                 <!-- Content -->
-                <div class="px-4 pt-3 pb-4 flex flex-col flex-1">
+                <div class="relative px-6 pt-8 pb-7 min-h-[168px]">
 
-                  <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] text-[#525252] font-medium">
-                      {{ article.date }}
-                    </span>
-
-                    <span class="text-[9px] font-semibold text-[#0f62fe] bg-[#edf5ff] border border-[#d0e2ff] px-2 py-0.5">
-                      {{ article.tag }}
-                    </span>
+                  <!-- Author avatar overlapping the image and content area -->
+                  <div class="absolute -top-[25px] left-6 w-[50px] h-[50px] bg-white p-[3px] shadow-[0_6px_18px_rgba(15,23,42,0.16)]">
+                    <img
+                      [src]="article.authorImage"
+                      [alt]="article.authorName"
+                      class="w-full h-full object-cover"
+                    />
                   </div>
 
-                  <h3 class="text-[11px] lg:text-[12px] font-extrabold text-[#161616] uppercase leading-[1.35] mb-4 min-h-[48px]">
+                  <div class="text-[10px] uppercase tracking-[0.08em] font-bold text-[#0f62fe] mb-3">
+                    {{ article.category }}
+                  </div>
+
+                  <h3 class="text-[15px] lg:text-[16px] leading-[1.32] tracking-[-0.02em] font-semibold text-[#161616] mb-5 max-w-[280px]">
                     {{ article.title }}
                   </h3>
 
-                  <div class="flex-1"></div>
-
-                  <div class="flex justify-between items-center mt-auto">
-
-                    <div class="flex items-center text-[#393939] gap-1.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                      </svg>
-
-                      <span class="text-[10px] font-semibold">
-                        {{ article.readTime }}
-                      </span>
-                    </div>
-
-                    <button class="flex items-center gap-1 text-[#0f62fe] font-semibold text-[10px] group-hover:text-[#0043ce] transition-colors">
-                      Read more
-                      <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                      </svg>
-                    </button>
-
-                  </div>
+                  <p class="text-[11px] text-[#525252]">
+                    By <span class="font-semibold text-[#161616]">{{ article.authorName }}</span>
+                  </p>
                 </div>
 
               </article>
@@ -262,6 +246,28 @@ interface GalleryPerson {
       color: #ffffff !important;
     }
 
+    .resource-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-4px);
+      border-color: #c6c6c6;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+    }
+
+    .resource-card-image {
+      height: 168px;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
     .floating-card {
       animation: floatCard 4.5s ease-in-out infinite;
     }
@@ -294,26 +300,26 @@ export class UpcomingEventsComponent {
       {
         id: 'blog-1',
         image: 'https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '19.09.2025',
-        tag: 'Blog',
-        title: 'HOW INTERNATIONAL CAREER PATHWAYS ARE CHANGING THE FUTURE OF GLOBAL MOBILITY',
-        readTime: '4 Minutes'
+        category: 'Career Strategy  >  Global Mobility',
+        title: 'Client-side vs. Server-side Development: Key Differences and Advantages Explained',
+        authorName: 'Nisha Nair',
+        authorImage: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'blog-2',
         image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '25.08.2025',
-        tag: 'Blog',
-        title: 'WHY STUDENTS SHOULD COMPARE STUDY, WORK, AND AUSBILDUNG BEFORE DECIDING',
-        readTime: '3 Minutes'
+        category: 'Engineering  >  Back-End',
+        title: 'Terraform vs. CloudFormation: Choosing the Right IaC Tool',
+        authorName: 'Emiliano Angileri',
+        authorImage: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'blog-3',
         image: 'https://images.pexels.com/photos/3184398/pexels-photo-3184398.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '09.04.2025',
-        tag: 'Blog',
-        title: 'BUILDING A RATIONAL CAREER DECISION JOURNEY FOR STUDENTS AND PARENTS',
-        readTime: '5 Minutes'
+        category: 'Design  >  UX Design',
+        title: 'Gestalt Principles: Strategic Design Framework for UI/UX Leaders',
+        authorName: 'Adel Elrashsha',
+        authorImage: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=200'
       }
     ],
 
@@ -321,26 +327,26 @@ export class UpcomingEventsComponent {
       {
         id: 'insight-1',
         image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '12.10.2025',
-        tag: 'Insight',
-        title: 'GERMANY TALENT DEMAND: HEALTHCARE, LOGISTICS, HOSPITALITY, AND TECH SECTOR OUTLOOK',
-        readTime: '6 Minutes'
+        category: 'Market Intelligence  >  Germany',
+        title: 'Germany Talent Demand: Healthcare, Logistics, Hospitality, and Tech Outlook',
+        authorName: 'Career360 Research',
+        authorImage: 'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'insight-2',
         image: 'https://images.pexels.com/photos/3184433/pexels-photo-3184433.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '03.10.2025',
-        tag: 'Insight',
-        title: 'HOW DATA-DRIVEN COUNSELLING IMPROVES STUDENT CONVERSION AND CAREER FIT',
-        readTime: '5 Minutes'
+        category: 'Data  >  Counselling',
+        title: 'How Data-Driven Counselling Improves Student Conversion and Career Fit',
+        authorName: 'Anjali Menon',
+        authorImage: 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'insight-3',
         image: 'https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '28.09.2025',
-        tag: 'Insight',
-        title: 'FROM LEAD SCORING TO NEXT BEST ACTION: THE NEW MODEL FOR EDUCATION ADVISORY',
-        readTime: '7 Minutes'
+        category: 'CRM  >  Automation',
+        title: 'From Lead Scoring to Next Best Action: The New Education Advisory Model',
+        authorName: 'Rahul Iyer',
+        authorImage: 'https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=200'
       }
     ],
 
@@ -348,26 +354,26 @@ export class UpcomingEventsComponent {
       {
         id: 'event-1',
         image: 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '15.11.2025',
-        tag: 'Event',
-        title: 'AUSBILDUNG IN GERMANY: LIVE CAREER PATHWAY WEBINAR FOR STUDENTS AND PARENTS',
-        readTime: '60 Minutes'
+        category: 'Events  >  Webinar',
+        title: 'Ausbildung in Germany: Live Career Pathway Webinar for Students and Parents',
+        authorName: 'Program Team',
+        authorImage: 'https://images.pexels.com/photos/3771836/pexels-photo-3771836.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'event-2',
         image: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '21.11.2025',
-        tag: 'Event',
-        title: 'GERMAN LANGUAGE READINESS MASTERCLASS FOR A1, A2, AND B1 LEARNERS',
-        readTime: '90 Minutes'
+        category: 'Training  >  German Language',
+        title: 'German Language Readiness Masterclass for A1, A2, and B1 Learners',
+        authorName: 'Academy Team',
+        authorImage: 'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=200'
       },
       {
         id: 'event-3',
         image: 'https://images.pexels.com/photos/7648047/pexels-photo-7648047.jpeg?auto=compress&cs=tinysrgb&w=600',
-        date: '04.12.2025',
-        tag: 'Event',
-        title: 'STUDY VS WORK VS AUSBILDUNG: CAREER DECISION WORKSHOP',
-        readTime: '75 Minutes'
+        category: 'Career  >  Workshop',
+        title: 'Study vs Work vs Ausbildung: Career Decision Workshop',
+        authorName: 'Career Advisory Team',
+        authorImage: 'https://images.pexels.com/photos/3760093/pexels-photo-3760093.jpeg?auto=compress&cs=tinysrgb&w=200'
       }
     ]
   };

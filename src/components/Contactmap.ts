@@ -12,7 +12,7 @@ interface Site {
 interface Country {
   name: string;
   code: string;
-  flag: string;
+  flagUrl: string;
   count: number;
   top: string;
   left: string;
@@ -44,27 +44,27 @@ interface Country {
       <div class="w-full h-[460px] md:h-[500px] lg:h-[540px] flex flex-col lg:flex-row border border-[#e0e0e0] shadow-[0_12px_36px_rgba(15,23,42,0.08)] overflow-hidden bg-white">
 
         <!-- MAP AREA -->
-        <div class="relative flex-1 h-full overflow-hidden bg-gradient-to-br from-[#eaf4ff] via-[#b8dfff] to-[#78a9ff]">
+        <div class="relative flex-1 h-full overflow-hidden map-enterprise-bg">
 
-          <!-- Map texture -->
-          <div class="absolute inset-0 opacity-30">
+          <!-- Real World Map Background -->
+          <div class="absolute inset-0 pointer-events-none">
             <img
-              src="https://images.pexels.com/photos/2859169/pexels-photo-2859169.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt="Map texture"
-              class="w-full h-full object-cover mix-blend-multiply"
+              src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg"
+              alt="World map background"
+              class="real-map-image"
             />
           </div>
 
-          <!-- IBM style overlay -->
-          <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(15,98,254,0.08),rgba(255,255,255,0.18)),radial-gradient(circle_at_22%_22%,rgba(255,255,255,0.58),transparent_34%),radial-gradient(circle_at_78%_30%,rgba(255,255,255,0.32),transparent_28%)]"></div>
+          <!-- Blue Enterprise Overlay -->
+          <div class="absolute inset-0 map-blue-overlay pointer-events-none"></div>
 
-          <!-- Grid overlay -->
+          <!-- Grid Overlay -->
           <div
-            class="absolute inset-0 opacity-[0.13]"
+            class="absolute inset-0 opacity-[0.10] pointer-events-none"
             style="background-image: linear-gradient(to right, #0f62fe 1px, transparent 1px), linear-gradient(to bottom, #0f62fe 1px, transparent 1px); background-size: 48px 48px;"
           ></div>
 
-          <!-- Country markers -->
+          <!-- Country Markers -->
           @for (country of countries; track country.name) {
             <button
               type="button"
@@ -75,34 +75,41 @@ interface Country {
               [attr.aria-label]="'Select ' + country.name"
             >
               <div
-                class="relative flex items-center gap-2 pl-1 pr-2.5 py-1 shadow-md border transition-all duration-300"
-                [ngClass]="selectedCountry?.name === country.name
-                  ? 'bg-[#0f62fe] border-[#0f62fe] scale-105'
-                  : 'bg-white/95 border-white hover:bg-[#0f62fe] hover:border-[#0f62fe] hover:scale-105'"
+                class="map-marker"
+                [ngClass]="selectedCountry?.name === country.name ? 'map-marker-active' : ''"
               >
-                <span class="w-7 h-7 rounded-full bg-white flex items-center justify-center text-lg shadow-sm overflow-hidden">
-                  {{ country.flag }}
+                <span class="flag-circle">
+                  <img
+                    [src]="country.flagUrl"
+                    [alt]="country.name + ' flag'"
+                    class="w-full h-full object-cover"
+                  />
                 </span>
 
-                <span
-                  class="text-[11px] font-bold whitespace-nowrap transition-colors"
-                  [ngClass]="selectedCountry?.name === country.name
-                    ? 'text-white'
-                    : 'text-[#161616] group-hover:text-white'"
-                >
+                <span class="marker-count">
                   {{ country.count }}
                 </span>
               </div>
 
-              <div class="absolute left-1/2 -translate-x-1/2 top-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div class="bg-white text-[#161616] text-[11px] font-bold px-2.5 py-1 shadow-md whitespace-nowrap border border-[#e0e0e0]">
-                  {{ country.flag }} {{ country.name }}
+              <div class="absolute left-1/2 -translate-x-1/2 top-[48px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div class="bg-white text-[#161616] text-[11px] font-bold px-2.5 py-1.5 shadow-md whitespace-nowrap border border-[#e0e0e0] flex items-center gap-1.5">
+                  <span class="inline-flex w-5 h-3 border border-[#e0e0e0] overflow-hidden shrink-0">
+                    <img
+                      [src]="country.flagUrl"
+                      [alt]="country.name + ' flag'"
+                      class="w-full h-full object-cover"
+                    />
+                  </span>
+
+                  <span>
+                    {{ country.name }}
+                  </span>
                 </div>
               </div>
             </button>
           }
 
-          <!-- Selected country site pins -->
+          <!-- Selected Country Site Pins -->
           @if (selectedCountry) {
             <div class="absolute inset-0 z-10 bg-white/10 backdrop-blur-[1px] animate-fade-in">
 
@@ -113,10 +120,14 @@ interface Country {
                   [style.left]="site.left"
                 >
                   <div class="relative">
-                    <div class="absolute inset-0 bg-[#0f62fe]/25 animate-ping"></div>
+                    <div class="absolute inset-0 rounded-full bg-[#0f62fe]/25 animate-ping"></div>
 
-                    <div class="relative w-7 h-7 bg-[#0f62fe] flex items-center justify-center shadow-xl border-2 border-white group-hover:scale-110 transition-transform z-10">
-                      <div class="w-2 h-2 bg-white"></div>
+                    <div class="relative w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-xl border-2 border-white group-hover:scale-110 transition-transform z-10 overflow-hidden">
+                      <img
+                        [src]="selectedCountry.flagUrl"
+                        [alt]="selectedCountry.name + ' flag'"
+                        class="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
 
@@ -135,8 +146,12 @@ interface Country {
               @if (selectedCountry.sites.length === 0) {
                 <div class="absolute inset-0 flex items-center justify-center px-6">
                   <div class="max-w-sm text-center bg-white/95 backdrop-blur-md shadow-xl border border-[#e0e0e0] p-6">
-                    <div class="w-14 h-14 rounded-full bg-[#f4f4f4] flex items-center justify-center text-4xl mx-auto mb-4 overflow-hidden">
-                      {{ selectedCountry.flag }}
+                    <div class="selected-empty-flag mx-auto mb-4">
+                      <img
+                        [src]="selectedCountry.flagUrl"
+                        [alt]="selectedCountry.name + ' flag'"
+                        class="w-full h-full object-cover"
+                      />
                     </div>
 
                     <h3 class="text-xl font-bold text-[#161616]">
@@ -153,7 +168,7 @@ interface Country {
             </div>
           }
 
-          <!-- Map controls -->
+          <!-- Map Controls -->
           <div class="absolute bottom-4 left-4 z-30 flex items-center gap-2">
             <button
               type="button"
@@ -172,9 +187,16 @@ interface Country {
 
           <!-- Legend -->
           <div class="absolute bottom-4 right-4 z-30 hidden md:flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-2 shadow-md border border-[#e0e0e0]">
-            <span class="w-2 h-2 bg-[#0f62fe]"></span>
+            <span class="w-5 h-5 rounded-full bg-white border border-[#0f62fe] flex items-center justify-center overflow-hidden">
+              <img
+                src="https://flagcdn.com/w80/de.png"
+                alt="Flag icon"
+                class="w-full h-full object-cover"
+              />
+            </span>
+
             <span class="text-xs font-semibold text-[#525252]">
-              Site Location
+              Country / Site Touchpoint
             </span>
           </div>
         </div>
@@ -182,7 +204,7 @@ interface Country {
         <!-- SIDE PANEL -->
         <aside class="w-full lg:w-[340px] h-full bg-[#f4f4f4] shrink-0 flex flex-col border-l border-[#e0e0e0]">
 
-          <!-- Country list view -->
+          <!-- Country List View -->
           @if (!selectedCountry) {
             <div class="p-4 flex-1 overflow-y-auto no-scrollbar">
 
@@ -197,7 +219,7 @@ interface Country {
                   </p>
                 </div>
 
-                <div class="w-9 h-9 bg-white shadow-sm flex items-center justify-center text-[#0f62fe] font-bold border border-[#e0e0e0]">
+                <div class="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center text-[#0f62fe] font-bold border border-[#e0e0e0]">
                   {{ totalSites }}
                 </div>
               </div>
@@ -210,8 +232,12 @@ interface Country {
                     (click)="selectCountry(country)"
                   >
                     <div class="flex items-center gap-3 min-w-0">
-                      <span class="w-9 h-9 rounded-full bg-[#f4f4f4] flex items-center justify-center text-2xl group-hover:bg-white overflow-hidden shrink-0">
-                        {{ country.flag }}
+                      <span class="country-list-flag">
+                        <img
+                          [src]="country.flagUrl"
+                          [alt]="country.name + ' flag'"
+                          class="w-full h-full object-cover"
+                        />
                       </span>
 
                       <div class="min-w-0">
@@ -225,7 +251,7 @@ interface Country {
                       </div>
                     </div>
 
-                    <span class="w-7 h-7 bg-[#0f62fe] text-white text-[11px] font-bold flex items-center justify-center shadow-sm group-hover:bg-white group-hover:text-[#0f62fe] shrink-0">
+                    <span class="w-7 h-7 rounded-full bg-[#0f62fe] text-white text-[11px] font-bold flex items-center justify-center shadow-sm group-hover:bg-white group-hover:text-[#0f62fe] shrink-0">
                       {{ country.count }}
                     </span>
                   </button>
@@ -234,7 +260,7 @@ interface Country {
             </div>
           }
 
-          <!-- Selected country detail view -->
+          <!-- Selected Country Detail View -->
           @if (selectedCountry) {
             <div class="p-4 flex-1 overflow-y-auto no-scrollbar animate-fade-in">
 
@@ -259,8 +285,12 @@ interface Country {
 
               <div class="bg-white p-4 shadow-sm border border-[#e0e0e0] mb-4">
                 <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-full bg-[#f4f4f4] flex items-center justify-center text-3xl overflow-hidden shrink-0">
-                    {{ selectedCountry.flag }}
+                  <div class="selected-country-flag">
+                    <img
+                      [src]="selectedCountry.flagUrl"
+                      [alt]="selectedCountry.name + ' flag'"
+                      class="w-full h-full object-cover"
+                    />
                   </div>
 
                   <div class="flex-1 min-w-0">
@@ -300,8 +330,12 @@ interface Country {
                   @for (site of selectedCountry.sites; track site.title) {
                     <article class="bg-white p-3 shadow-sm border border-[#e0e0e0] hover:shadow-md transition-shadow">
                       <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 bg-[#0f62fe] flex items-center justify-center shrink-0">
-                          <span class="w-2 h-2 bg-white"></span>
+                        <div class="site-list-flag">
+                          <img
+                            [src]="selectedCountry.flagUrl"
+                            [alt]="selectedCountry.name + ' flag'"
+                            class="w-full h-full object-cover"
+                          />
                         </div>
 
                         <div>
@@ -352,6 +386,156 @@ interface Country {
       font-family: 'Roboto', Helvetica, Arial, sans-serif;
     }
 
+    .map-enterprise-bg {
+      background:
+        linear-gradient(135deg, #edf5ff 0%, #d0e2ff 42%, #a6c8ff 100%);
+    }
+
+    .real-map-image {
+      width: 112%;
+      height: 112%;
+      object-fit: contain;
+      object-position: center;
+      opacity: 0.52;
+      filter:
+        sepia(1)
+        saturate(5)
+        hue-rotate(175deg)
+        brightness(0.92)
+        contrast(1.12);
+      transform: translate(-3%, -4%);
+    }
+
+    .map-blue-overlay {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(15, 98, 254, 0.16),
+          rgba(255, 255, 255, 0.15)
+        ),
+        radial-gradient(
+          circle at 20% 18%,
+          rgba(255, 255, 255, 0.62),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 78% 30%,
+          rgba(255, 255, 255, 0.26),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 52% 70%,
+          rgba(15, 98, 254, 0.13),
+          transparent 38%
+        );
+    }
+
+    .map-marker {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 2px solid #ffffff;
+      box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.16),
+        0 0 0 6px rgba(15, 98, 254, 0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+    }
+
+    .map-marker:hover,
+    .map-marker-active {
+      transform: scale(1.12);
+      background: #0f62fe;
+      border-color: #ffffff;
+      box-shadow:
+        0 16px 34px rgba(15, 98, 254, 0.34),
+        0 0 0 8px rgba(15, 98, 254, 0.16);
+    }
+
+    .flag-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(224, 224, 224, 0.95);
+    }
+
+    .marker-count {
+      position: absolute;
+      right: -7px;
+      top: -7px;
+      min-width: 19px;
+      height: 19px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #161616;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.22);
+    }
+
+    .country-list-flag {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .selected-country-flag {
+      width: 88px;
+      height: 56px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.10);
+    }
+
+    .selected-empty-flag {
+      width: 88px;
+      height: 56px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.10);
+    }
+
+    .site-list-flag {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+    }
+
     .no-scrollbar {
       scrollbar-width: none;
       -ms-overflow-style: none;
@@ -386,7 +570,7 @@ export class ContactMapComponent {
     {
       name: 'Canada',
       code: 'CA',
-      flag: '🇨🇦',
+      flagUrl: 'https://flagcdn.com/w160/ca.png',
       count: 4,
       top: '31%',
       left: '22%',
@@ -410,7 +594,7 @@ export class ContactMapComponent {
     {
       name: 'Korea',
       code: 'KR',
-      flag: '🇰🇷',
+      flagUrl: 'https://flagcdn.com/w160/kr.png',
       count: 1,
       top: '40%',
       left: '78%',
@@ -427,7 +611,7 @@ export class ContactMapComponent {
     {
       name: 'Latvia',
       code: 'LV',
-      flag: '🇱🇻',
+      flagUrl: 'https://flagcdn.com/w160/lv.png',
       count: 1,
       top: '28%',
       left: '53%',
@@ -444,7 +628,7 @@ export class ContactMapComponent {
     {
       name: 'Malaysia',
       code: 'MY',
-      flag: '🇲🇾',
+      flagUrl: 'https://flagcdn.com/w160/my.png',
       count: 1,
       top: '58%',
       left: '72%',
@@ -461,7 +645,7 @@ export class ContactMapComponent {
     {
       name: 'Mexico',
       code: 'MX',
-      flag: '🇲🇽',
+      flagUrl: 'https://flagcdn.com/w160/mx.png',
       count: 6,
       top: '48%',
       left: '20%',
@@ -492,7 +676,7 @@ export class ContactMapComponent {
     {
       name: 'Myanmar',
       code: 'MM',
-      flag: '🇲🇲',
+      flagUrl: 'https://flagcdn.com/w160/mm.png',
       count: 1,
       top: '53%',
       left: '68%',
@@ -509,7 +693,7 @@ export class ContactMapComponent {
     {
       name: 'Netherlands',
       code: 'NL',
-      flag: '🇳🇱',
+      flagUrl: 'https://flagcdn.com/w160/nl.png',
       count: 5,
       top: '33%',
       left: '48%',
@@ -533,7 +717,7 @@ export class ContactMapComponent {
     {
       name: 'Norway',
       code: 'NO',
-      flag: '🇳🇴',
+      flagUrl: 'https://flagcdn.com/w160/no.png',
       count: 3,
       top: '22%',
       left: '50%',
@@ -557,7 +741,7 @@ export class ContactMapComponent {
     {
       name: 'Panama',
       code: 'PA',
-      flag: '🇵🇦',
+      flagUrl: 'https://flagcdn.com/w160/pa.png',
       count: 6,
       top: '56%',
       left: '28%',
@@ -581,7 +765,7 @@ export class ContactMapComponent {
     {
       name: 'Ukraine',
       code: 'UA',
-      flag: '🇺🇦',
+      flagUrl: 'https://flagcdn.com/w160/ua.png',
       count: 2,
       top: '35%',
       left: '56%',

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -7,7 +7,8 @@ interface SocialPostCard {
   username: string;
   verified: boolean;
   imageUrl: string;
-  caption: string;
+  flagUrl: string;
+  countryName: string;
   theme: 'yellow' | 'grey';
 }
 
@@ -27,87 +28,136 @@ interface ServiceCard {
   template: `
     <section class="font-main bg-white pt-10 pb-24">
 
-      <!-- Top Profile Card Carousel -->
+      <!-- Top Country / Ambassador Card Carousel -->
       <div class="max-w-[1584px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-20">
-        <div class="flex overflow-x-auto gap-5 lg:gap-6 xl:gap-7 pb-6 hide-scrollbar snap-x snap-mandatory">
 
-          @for (post of socialPosts; track $index) {
-            <article class="w-[240px] lg:w-[260px] xl:w-[280px] shrink-0 snap-start">
+        <div class="relative">
 
-              <div class="relative bg-white border border-[#d9d9d9] rounded-[14px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <!-- Left Arrow -->
+          <button
+            type="button"
+            class="carousel-nav carousel-nav-left"
+            (click)="prevSocialSlide()"
+            aria-label="Previous ambassador card"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
 
-                <!-- Main Image Frame -->
-                <div class="px-4 pt-4">
-                  <div class="relative h-[220px] xl:h-[235px] overflow-hidden rounded-[6px] border border-[#e0e0e0] bg-[#f4f4f4]">
-                    <img
-                      [src]="post.imageUrl"
-                      [alt]="post.username"
-                      class="w-full h-full object-cover object-top"
-                      loading="lazy"
-                      (error)="imageError($event, post.imageUrl)"
-                    />
+          <!-- Cards Track -->
+          <div
+            #socialCarouselTrack
+            class="flex overflow-x-auto gap-5 lg:gap-6 xl:gap-7 pb-6 hide-scrollbar snap-x snap-mandatory scroll-smooth px-12"
+          >
 
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                  </div>
-                </div>
+            @for (post of socialPosts; track $index) {
+              <article class="w-[240px] lg:w-[260px] xl:w-[280px] shrink-0 snap-start">
 
-                <!-- Profile Circle Overlap -->
-                <div class="relative px-5 pt-4">
-                  <div class="absolute -top-8 left-5 w-[58px] h-[58px] rounded-full bg-white border-[4px] border-white shadow-md overflow-hidden">
-                    <img
-                      [src]="post.imageUrl"
-                      [alt]="post.username"
-                      class="w-full h-full object-cover object-top"
-                      loading="lazy"
-                      (error)="imageError($event, post.imageUrl)"
-                    />
-                  </div>
+                <div class="relative bg-white border border-[#d9d9d9] rounded-[14px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
 
-                  <!-- Small Status / Destination Label -->
-                  <div class="flex justify-end mb-4">
-                    <span class="inline-flex items-center px-3 py-1 rounded-[4px] bg-[#f4f4f4] border border-[#e0e0e0] text-[11px] font-semibold text-[#525252]">
-                      Ambassador
-                    </span>
-                  </div>
+                  <!-- Upper Main Image Frame -->
+                  <div class="px-4 pt-4">
+                    <div class="relative h-[220px] xl:h-[235px] overflow-hidden rounded-[6px] border border-[#e0e0e0] bg-[#f4f4f4]">
+                      <img
+                        [src]="post.imageUrl"
+                        [alt]="post.username"
+                        class="w-full h-full object-cover object-top"
+                        loading="lazy"
+                        (error)="imageError($event, post.imageUrl)"
+                      />
 
-                  <!-- Name Only -->
-                  <div class="pt-1 min-h-[42px]">
-                    <div class="flex items-center gap-1.5 mb-1">
-                      <h3 class="text-[15px] font-semibold text-[#161616] leading-tight">
-                        {{ post.username }}
-                      </h3>
-
-                      @if (post.verified) {
-                        <svg class="w-3.5 h-3.5 text-[#0f62fe] fill-current" viewBox="0 0 24 24">
-                          <path d="M12 2l2.2 2.8 3.5-.5 1.1 3.4 3.2 1.6-1.6 3.2 1.6 3.2-3.2 1.6-1.1 3.4-3.5-.5L12 22l-2.2-2.8-3.5.5-1.1-3.4L2 14.7l1.6-3.2L2 8.3l3.2-1.6 1.1-3.4 3.5.5L12 2z"/>
-                          <path d="M10.4 15.7L6.9 12.2l1.2-1.2 2.3 2.3 5.5-5.5 1.2 1.2-6.7 6.7z" fill="white"/>
-                        </svg>
-                      }
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                     </div>
                   </div>
 
-                  <!-- Bottom Buttons -->
-                  <div class="grid grid-cols-2 gap-3 pt-4 pb-5">
-                    <button
-                      type="button"
-                      class="h-[38px] border border-[#0f62fe] bg-[#0f62fe] text-white text-[13px] font-semibold rounded-[4px] hover:bg-[#0043ce] transition-colors"
-                    >
-                      Follow
-                    </button>
+                  <!-- Country Flag Circle Overlap -->
+                  <div class="relative px-5 pt-4">
+                    <div class="absolute -top-8 left-5 w-[58px] h-[58px] rounded-full bg-white border-[4px] border-white shadow-md overflow-hidden flex items-center justify-center">
+                      <img
+                        [src]="post.flagUrl"
+                        [alt]="post.countryName + ' flag'"
+                        class="w-full h-full rounded-full object-cover"
+                        loading="lazy"
+                        (error)="imageError($event, post.flagUrl)"
+                      />
+                    </div>
 
-                    <button
-                      type="button"
-                      class="h-[38px] border border-[#c6c6c6] bg-white text-[#161616] text-[13px] font-semibold rounded-[4px] hover:bg-[#f4f4f4] transition-colors"
-                    >
-                      Chat
-                    </button>
+                    <!-- Country Label -->
+                    <div class="flex justify-end mb-4">
+                      <span class="inline-flex items-center px-3 py-1 rounded-[4px] bg-[#f4f4f4] border border-[#e0e0e0] text-[11px] font-semibold text-[#525252]">
+                        {{ post.countryName }}
+                      </span>
+                    </div>
+
+                    <!-- Name Only -->
+                    <div class="pt-1 min-h-[42px]">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <h3 class="text-[15px] font-semibold text-[#161616] leading-tight">
+                          {{ post.username }}
+                        </h3>
+
+                        @if (post.verified) {
+                          <svg class="w-3.5 h-3.5 text-[#0f62fe] fill-current" viewBox="0 0 24 24">
+                            <path d="M12 2l2.2 2.8 3.5-.5 1.1 3.4 3.2 1.6-1.6 3.2 1.6 3.2-3.2 1.6-1.1 3.4-3.5-.5L12 22l-2.2-2.8-3.5.5-1.1-3.4L2 14.7l1.6-3.2L2 8.3l3.2-1.6 1.1-3.4 3.5.5L12 2z"/>
+                            <path d="M10.4 15.7L6.9 12.2l1.2-1.2 2.3 2.3 5.5-5.5 1.2 1.2-6.7 6.7z" fill="white"/>
+                          </svg>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Bottom Buttons -->
+                    <div class="grid grid-cols-2 gap-3 pt-4 pb-5">
+                      <button
+                        type="button"
+                        class="h-[38px] border border-[#0f62fe] bg-[#0f62fe] text-white text-[13px] font-semibold rounded-[4px] hover:bg-[#0043ce] transition-colors"
+                      >
+                        Follow
+                      </button>
+
+                      <button
+                        type="button"
+                        class="h-[38px] border border-[#c6c6c6] bg-white text-[#161616] text-[13px] font-semibold rounded-[4px] hover:bg-[#f4f4f4] transition-colors"
+                      >
+                        Chat
+                      </button>
+                    </div>
                   </div>
+
                 </div>
 
-              </div>
+              </article>
+            }
 
-            </article>
-          }
+          </div>
+
+          <!-- Right Arrow -->
+          <button
+            type="button"
+            class="carousel-nav carousel-nav-right"
+            (click)="nextSocialSlide()"
+            aria-label="Next ambassador card"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
 
         </div>
       </div>
@@ -191,6 +241,55 @@ interface ServiceCard {
       font-family: 'Poppins', Helvetica, Arial, sans-serif;
     }
 
+    .carousel-nav {
+      position: absolute;
+      top: 44%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      z-index: 30;
+      transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .carousel-nav:hover {
+      background: #0f62fe;
+      color: #ffffff;
+      border-color: #0f62fe;
+      box-shadow: 0 14px 32px rgba(15, 98, 254, 0.28);
+    }
+
+    .carousel-nav:active {
+      transform: translateY(-50%) scale(0.94);
+      box-shadow: 0 8px 18px rgba(15, 98, 254, 0.22);
+    }
+
+    .carousel-nav:focus-visible {
+      outline: 3px solid rgba(15, 98, 254, 0.28);
+      outline-offset: 3px;
+    }
+
+    .carousel-nav-left {
+      left: -6px;
+    }
+
+    .carousel-nav-right {
+      right: -6px;
+    }
+
     .hide-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -200,15 +299,26 @@ interface ServiceCard {
       display: none;
     }
 
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    @media (max-width: 640px) {
+      .carousel-nav {
+        width: 38px;
+        height: 38px;
+        top: 42%;
+      }
+
+      .carousel-nav-left {
+        left: -2px;
+      }
+
+      .carousel-nav-right {
+        right: -2px;
+      }
     }
   `]
 })
 export class HomeShowcaseComponent {
+
+  @ViewChild('socialCarouselTrack') socialCarouselTrack!: ElementRef<HTMLDivElement>;
 
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
@@ -221,52 +331,201 @@ export class HomeShowcaseComponent {
     });
   }
 
+  prevSocialSlide(): void {
+    const track = this.socialCarouselTrack?.nativeElement;
+
+    if (!track) return;
+
+    const scrollAmount = this.getSocialScrollAmount(track);
+
+    track.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+
+  nextSocialSlide(): void {
+    const track = this.socialCarouselTrack?.nativeElement;
+
+    if (!track) return;
+
+    const scrollAmount = this.getSocialScrollAmount(track);
+
+    track.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+
+  private getSocialScrollAmount(track: HTMLDivElement): number {
+    const firstCard = track.querySelector('article') as HTMLElement | null;
+
+    if (!firstCard) {
+      return 300;
+    }
+
+    const cardWidth = firstCard.offsetWidth;
+    const gap = 28;
+
+    return cardWidth + gap;
+  }
+
   imageError(event: Event, imageUrl: string) {
     console.error('Image failed to load:', imageUrl);
   }
 
   socialPosts: SocialPostCard[] = [
     {
-      username: 'Nurse Ambassador',
+      username: 'Canada Career Guide',
       verified: true,
       theme: 'yellow',
-      caption: 'Germany healthcare pathway guidance from nursing candidates and student ambassadors.',
+      countryName: 'Canada',
+      flagUrl: 'https://flagcdn.com/w160/ca.png',
       imageUrl: '/assets/NURSES/NURSE1.webp'
     },
     {
-      username: 'Healthcare Mentor',
+      username: 'Germany Ausbildung Advisor',
       verified: true,
       theme: 'grey',
-      caption: 'Speak with mentors who understand nursing, Ausbildung, German language and relocation preparation.',
+      countryName: 'Germany',
+      flagUrl: 'https://flagcdn.com/w160/de.png',
       imageUrl: '/assets/NURSES/NURSE2.webp'
     },
     {
-      username: 'Ausbildung Nurse Advisor',
+      username: 'UK Study Mentor',
       verified: true,
       theme: 'yellow',
-      caption: 'Explore healthcare Ausbildung, employer readiness, interviews, documentation and visa planning.',
+      countryName: 'United Kingdom',
+      flagUrl: 'https://flagcdn.com/w160/gb.png',
       imageUrl: '/assets/NURSES/NURSE3.webp'
     },
     {
-      username: 'Germany Nursing Guide',
+      username: 'Australia Pathway Coach',
       verified: true,
       theme: 'yellow',
-      caption: 'Understand German language levels, healthcare career routes and long-term settlement planning.',
+      countryName: 'Australia',
+      flagUrl: 'https://flagcdn.com/w160/au.png',
       imageUrl: '/assets/NURSES/NURSE4.webp'
     },
     {
-      username: 'Nursing Career Coach',
+      username: 'New Zealand Career Advisor',
       verified: true,
       theme: 'grey',
-      caption: 'Get support with nursing profile building, interview preparation and international career planning.',
+      countryName: 'New Zealand',
+      flagUrl: 'https://flagcdn.com/w160/nz.png',
       imageUrl: '/assets/NURSES/NURSE5.webp'
     },
     {
-      username: 'German Healthcare Trainer',
+      username: 'Ireland Study Consultant',
       verified: true,
       theme: 'yellow',
-      caption: 'A1 to B2 German learning support for healthcare, nursing and workplace communication.',
+      countryName: 'Ireland',
+      flagUrl: 'https://flagcdn.com/w160/ie.png',
       imageUrl: '/assets/NURSES/NURSE6.webp'
+    },
+    {
+      username: 'USA Healthcare Advisor',
+      verified: true,
+      theme: 'grey',
+      countryName: 'United States',
+      flagUrl: 'https://flagcdn.com/w160/us.png',
+      imageUrl: '/assets/NURSES/NURSE7.webp'
+    },
+    {
+      username: 'France Study Guide',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'France',
+      flagUrl: 'https://flagcdn.com/w160/fr.png',
+      imageUrl: '/assets/NURSES/NURSE8.webp'
+    },
+    {
+      username: 'Italy Career Mentor',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Italy',
+      flagUrl: 'https://flagcdn.com/w160/it.png',
+      imageUrl: '/assets/NURSES/NURSE9.webp'
+    },
+    {
+      username: 'Spain Study Advisor',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'Spain',
+      flagUrl: 'https://flagcdn.com/w160/es.png',
+      imageUrl: '/assets/NURSES/NURSE10.webp'
+    },
+    {
+      username: 'Netherlands Career Guide',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Netherlands',
+      flagUrl: 'https://flagcdn.com/w160/nl.png',
+      imageUrl: '/assets/NURSES/NURSE11.webp'
+    },
+    {
+      username: 'Sweden Study Consultant',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'Sweden',
+      flagUrl: 'https://flagcdn.com/w160/se.png',
+      imageUrl: '/assets/NURSES/NURSE12.webp'
+    },
+    {
+      username: 'Finland Education Advisor',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Finland',
+      flagUrl: 'https://flagcdn.com/w160/fi.png',
+      imageUrl: '/assets/NURSES/NURSE13.webp'
+    },
+    {
+      username: 'Denmark Career Coach',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'Denmark',
+      flagUrl: 'https://flagcdn.com/w160/dk.png',
+      imageUrl: '/assets/NURSES/NURSE14.webp'
+    },
+    {
+      username: 'Norway Study Mentor',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Norway',
+      flagUrl: 'https://flagcdn.com/w160/no.png',
+      imageUrl: '/assets/NURSES/NURSE15.webp'
+    },
+    {
+      username: 'Switzerland Career Advisor',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'Switzerland',
+      flagUrl: 'https://flagcdn.com/w160/ch.png',
+      imageUrl: '/assets/NURSES/NURSE16.webp'
+    },
+    {
+      username: 'Austria Study Guide',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Austria',
+      flagUrl: 'https://flagcdn.com/w160/at.png',
+      imageUrl: '/assets/NURSES/NURSE17.webp'
+    },
+    {
+      username: 'Belgium Career Mentor',
+      verified: true,
+      theme: 'yellow',
+      countryName: 'Belgium',
+      flagUrl: 'https://flagcdn.com/w160/be.png',
+      imageUrl: '/assets/NURSES/NURSE18.webp'
+    },
+    {
+      username: 'Georgia Pathway Advisor',
+      verified: true,
+      theme: 'grey',
+      countryName: 'Georgia',
+      flagUrl: 'https://flagcdn.com/w160/ge.png',
+      imageUrl: '/assets/NURSES/NURSE19.webp'
     }
   ];
 

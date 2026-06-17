@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface StudyDestination {
+interface CountryTab {
   id: string;
   country: string;
   flagUrl: string;
-  title: string;
-  subtitle: string;
+}
+
+interface InstitutionCard {
+  id: string;
+  countryId: string;
+  name: string;
+  location: string;
   description: string;
   imageUrl: string;
-  highlights: string[];
-  stats: {
-    label: string;
-    value: string;
-  }[];
-  gradient: string;
+  logoUrl: string;
+  featured: boolean;
 }
 
 @Component({
@@ -22,216 +23,122 @@ interface StudyDestination {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="font-main relative overflow-hidden bg-white py-16 lg:py-24">
+    <section class="font-main bg-white py-14 lg:py-20">
 
-      <!-- Soft Background Gradient -->
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -top-32 -left-24 h-[420px] w-[420px] rounded-full bg-blue-100/70 blur-3xl"></div>
-        <div class="absolute top-40 right-0 h-[380px] w-[380px] rounded-full bg-cyan-100/70 blur-3xl"></div>
-        <div class="absolute bottom-0 left-1/3 h-[320px] w-[320px] rounded-full bg-indigo-100/50 blur-3xl"></div>
-      </div>
+      <div class="max-w-[1584px] mx-auto px-6 lg:px-12 xl:px-16 2xl:px-20">
 
-      <div class="relative z-10 max-w-[1584px] mx-auto px-6 lg:px-12 xl:px-16 2xl:px-20">
-
-        <!-- Section Heading -->
-        <div class="mx-auto mb-12 max-w-[860px] text-center lg:mb-16">
-          <p class="mb-4 text-[12px] font-bold uppercase tracking-[0.22em] text-[#0f62fe]">
-            Global Study Pathways
+        <!-- Heading -->
+        <div class="mx-auto max-w-[920px] text-center mb-8 lg:mb-10">
+          <p class="mb-4 text-[12px] font-semibold uppercase tracking-[0.28em] text-[#0f62fe]">
+            Trusted Partners
           </p>
 
-          <h2 class="text-[34px] lg:text-[48px] font-semibold text-slate-950 tracking-[-0.045em] leading-tight">
-            Choose your Study Destination
+          <h2 class="text-[32px] md:text-[42px] lg:text-[48px] font-bold text-slate-900 tracking-[-0.04em] leading-[1.08]">
+            Trusted by 1,500+ Universities, Colleges,
+            <span class="block">and Schools Worldwide</span>
           </h2>
-
-          <p class="mt-5 text-[15px] lg:text-[17px] leading-relaxed text-slate-600">
-            Explore destination-specific study pathways, visa readiness, university options, living cost,
-            post-study work opportunities and long-term career outcomes.
-          </p>
         </div>
 
-        <!-- Equal Size Country Selector Cards -->
-        <div class="mx-auto mb-10 grid max-w-[1050px] grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          @for (destination of destinations; track destination.id) {
+        <!-- Country Tabs -->
+        <div class="mx-auto mb-12 flex max-w-[1140px] flex-wrap items-center justify-center gap-3">
+          @for (tab of countryTabs; track tab.id) {
             <button
               type="button"
-              (click)="selectDestination(destination.id)"
-              class="h-[58px] w-full border px-4 text-left transition-all duration-300"
-              [class.border-[#0f62fe]]="activeDestination.id === destination.id"
-              [class.bg-[#0f62fe]]="activeDestination.id === destination.id"
-              [class.text-white]="activeDestination.id === destination.id"
-              [class.shadow-lg]="activeDestination.id === destination.id"
-              [class.shadow-blue-500/20]="activeDestination.id === destination.id"
-              [class.border-slate-200]="activeDestination.id !== destination.id"
-              [class.bg-white]="activeDestination.id !== destination.id"
-              [class.text-slate-700]="activeDestination.id !== destination.id"
-              [class.hover:border-[#0f62fe]]="activeDestination.id !== destination.id"
+              (click)="selectCountry(tab.id)"
+              class="inline-flex h-[52px] items-center gap-3 border px-4 pr-5 transition-all duration-300"
+              [class.bg-[#0f62fe]]="activeCountryId === tab.id"
+              [class.border-[#0f62fe]]="activeCountryId === tab.id"
+              [class.text-white]="activeCountryId === tab.id"
+              [class.shadow-lg]="activeCountryId === tab.id"
+              [class.shadow-blue-500/20]="activeCountryId === tab.id"
+              [class.bg-white]="activeCountryId !== tab.id"
+              [class.border-slate-200]="activeCountryId !== tab.id"
+              [class.text-slate-800]="activeCountryId !== tab.id"
+              [class.hover:border-[#0f62fe]]="activeCountryId !== tab.id"
             >
-              <div class="flex h-full items-center gap-3">
-                <span class="flex h-7 w-10 shrink-0 overflow-hidden border border-slate-200 bg-white">
-                  <img
-                    [src]="destination.flagUrl"
-                    [alt]="destination.country + ' flag'"
-                    class="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </span>
+              <span class="flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white">
+                <img
+                  [src]="tab.flagUrl"
+                  [alt]="tab.country + ' flag'"
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </span>
 
-                <span class="block truncate text-[13px] font-bold">
-                  {{ destination.country }}
-                </span>
-              </div>
+              <span class="text-[16px] font-semibold whitespace-nowrap">
+                {{ tab.country }}
+              </span>
             </button>
           }
         </div>
 
-        <!-- Main Interactive Destination Card -->
-        <div class="mx-auto grid max-w-[1180px] grid-cols-1 overflow-hidden border border-slate-200 bg-white/85 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl lg:grid-cols-12">
+        <!-- Institution Cards -->
+        <div class="mx-auto grid max-w-[1140px] grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 
-          <!-- Image Area -->
-          <div class="relative min-h-[420px] overflow-hidden lg:col-span-7 lg:h-[610px]">
+          @for (card of filteredInstitutions; track card.id) {
+            <article class="group overflow-hidden border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#0f62fe] hover:shadow-xl">
 
-            <img
-              [src]="activeDestination.imageUrl"
-              [alt]="activeDestination.title"
-              class="h-full w-full object-cover transition-all duration-700"
-              loading="lazy"
-            />
+              <!-- Image -->
+              <div class="relative h-[230px] overflow-hidden bg-slate-100">
+                <img
+                  [src]="card.imageUrl"
+                  [alt]="card.name"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
 
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent"></div>
-
-            <!-- Floating Destination Badge -->
-            <div class="absolute left-6 top-6 border border-white/30 bg-white/20 px-4 py-2 text-white shadow-lg backdrop-blur-md">
-              <div class="flex items-center gap-2 text-[13px] font-semibold">
-                <span class="flex h-6 w-9 overflow-hidden border border-white/30">
-                  <img
-                    [src]="activeDestination.flagUrl"
-                    [alt]="activeDestination.country + ' flag'"
-                    class="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </span>
-                {{ activeDestination.country }}
-              </div>
-            </div>
-
-            <!-- Bottom Caption -->
-            <div class="absolute bottom-6 left-6 right-6">
-              <p class="mb-3 text-[12px] font-bold uppercase tracking-[0.18em] text-blue-100">
-                Destination Snapshot
-              </p>
-
-              <h3 class="max-w-[620px] text-[30px] font-semibold leading-tight tracking-[-0.035em] text-white lg:text-[42px]">
-                {{ activeDestination.title }}
-              </h3>
-
-              <p class="mt-3 max-w-[560px] text-[14px] leading-relaxed text-white/85">
-                {{ activeDestination.subtitle }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Content Area -->
-          <div class="relative lg:col-span-5 lg:h-[610px]">
-
-            <div
-              class="absolute inset-0 opacity-90"
-              [ngClass]="activeDestination.gradient"
-            ></div>
-
-            <div class="relative z-10 flex h-full flex-col p-7 lg:p-9">
-
-              <div class="mb-7">
-                <p class="mb-3 text-[12px] font-bold uppercase tracking-[0.18em] text-[#0f62fe]">
-                  Study Destination
-                </p>
-
-                <h3 class="text-[30px] font-semibold tracking-[-0.04em] text-slate-950 lg:text-[38px]">
-                  {{ activeDestination.country }}
-                </h3>
-
-                <p class="mt-4 text-[15px] leading-relaxed text-slate-600">
-                  {{ activeDestination.description }}
-                </p>
-              </div>
-
-              <!-- Equal Size Stats -->
-              <div class="mb-7 grid grid-cols-3 gap-3">
-                @for (stat of activeDestination.stats; track stat.label) {
-                  <div class="flex h-[92px] flex-col justify-center border border-white/70 bg-white/75 p-4 shadow-sm backdrop-blur">
-                    <p class="text-[19px] font-bold text-slate-950">
-                      {{ stat.value }}
-                    </p>
-                    <p class="mt-1 text-[11px] font-medium leading-snug text-slate-500">
-                      {{ stat.label }}
-                    </p>
+                @if (card.featured) {
+                  <div class="absolute left-4 top-4 inline-flex h-9 items-center gap-2 bg-white/95 px-4 shadow-sm backdrop-blur">
+                    <span class="h-2 w-2 rounded-full bg-[#0f62fe]"></span>
+                    <span class="text-[12px] font-bold text-[#0f62fe]">
+                      Featured
+                    </span>
                   </div>
                 }
               </div>
 
-              <!-- Equal Size Highlights -->
-              <div class="mb-8 grid gap-3">
-                @for (highlight of activeDestination.highlights; track highlight) {
-                  <div class="flex min-h-[68px] items-start gap-3 border border-white/70 bg-white/70 p-3 shadow-sm backdrop-blur">
-                    <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#0f62fe]"></span>
-                    <p class="text-[13px] font-medium leading-relaxed text-slate-700">
-                      {{ highlight }}
+              <!-- Content -->
+              <div class="p-5">
+                <div class="mb-4 flex items-center gap-4">
+
+                  <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+                    <img
+                      [src]="card.logoUrl"
+                      [alt]="card.name + ' logo'"
+                      class="h-full w-full object-contain p-1"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div class="min-w-0">
+                    <h3 class="truncate text-[20px] font-bold tracking-[-0.03em] text-slate-900">
+                      {{ card.name }}
+                    </h3>
+
+                    <p class="mt-1 text-[13px] font-medium text-slate-500">
+                      {{ card.location }}
                     </p>
                   </div>
-                }
+
+                </div>
+
+                <p class="line-clamp-5 text-[15px] leading-relaxed text-slate-600">
+                  {{ card.description }}
+                </p>
               </div>
 
-              <!-- CTA Buttons -->
-              <div class="mt-auto grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <button
-                  type="button"
-                  class="inline-flex h-[46px] items-center justify-center bg-[#0f62fe] px-6 text-[13px] font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[#0043ce]"
-                >
-                  Explore Programs
-                  <span class="ml-2">→</span>
-                </button>
+            </article>
+          }
 
-                <button
-                  type="button"
-                  class="inline-flex h-[46px] items-center justify-center border border-slate-300 bg-white px-6 text-[13px] font-bold text-slate-900 transition hover:border-[#0f62fe] hover:text-[#0f62fe]"
-                >
-                  Check Eligibility
-                </button>
-              </div>
-
-            </div>
-          </div>
         </div>
 
-        <!-- Mini Navigation -->
-        <div class="mx-auto mt-8 flex max-w-[1180px] items-center justify-between">
+        <!-- CTA -->
+        <div class="mt-10 flex justify-center">
           <button
             type="button"
-            (click)="previousDestination()"
-            class="inline-flex h-11 w-11 items-center justify-center border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:border-[#0f62fe] hover:text-[#0f62fe]"
+            class="h-[52px] bg-[#0f62fe] px-8 text-[15px] font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[#0043ce]"
           >
-            ←
-          </button>
-
-          <div class="flex items-center gap-2">
-            @for (destination of destinations; track destination.id) {
-              <button
-                type="button"
-                (click)="selectDestination(destination.id)"
-                class="h-2.5 transition-all duration-300"
-                [class.w-8]="activeDestination.id === destination.id"
-                [class.bg-[#0f62fe]]="activeDestination.id === destination.id"
-                [class.w-2.5]="activeDestination.id !== destination.id"
-                [class.bg-slate-300]="activeDestination.id !== destination.id"
-              ></button>
-            }
-          </div>
-
-          <button
-            type="button"
-            (click)="nextDestination()"
-            class="inline-flex h-11 w-11 items-center justify-center border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:border-[#0f62fe] hover:text-[#0f62fe]"
-          >
-            →
+            Explore More {{ activeCountryName }} Institutions
           </button>
         </div>
 
@@ -244,131 +151,249 @@ interface StudyDestination {
     .font-main {
       font-family: 'Poppins', Helvetica, Arial, sans-serif;
     }
+
+    .line-clamp-5 {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   `]
 })
 export class StudyDestinationComponent {
-  activeDestinationId = 'germany';
 
-  destinations: StudyDestination[] = [
+  activeCountryId = 'germany';
+
+  countryTabs: CountryTab[] = [
     {
-      id: 'germany',
-      country: 'Germany',
-      flagUrl: 'https://flagcdn.com/w80/de.png',
-      title: 'Study and build your career in Germany',
-      subtitle: 'Public universities, Ausbildung pathways, applied sciences and strong post-study work opportunities.',
-      description: 'Germany is a high-value destination for students looking for quality education, affordable tuition, applied learning, industry exposure and structured career pathways.',
-      imageUrl: 'https://images.pexels.com/photos/1108701/pexels-photo-1108701.jpeg?auto=compress&cs=tinysrgb&w=1400',
-      highlights: [
-        'Strong public university and applied sciences ecosystem.',
-        'Excellent destination for engineering, IT, healthcare and business programs.',
-        'Post-study career options with long-term settlement potential.'
-      ],
-      stats: [
-        { label: 'Popular Route', value: 'UG/PG' },
-        { label: 'Work Option', value: 'Yes' },
-        { label: 'Career ROI', value: 'High' }
-      ],
-      gradient: 'bg-gradient-to-br from-blue-50 via-white to-cyan-50'
-    },
-    {
-      id: 'uk',
-      country: 'United Kingdom',
-      flagUrl: 'https://flagcdn.com/w80/gb.png',
-      title: 'Study in the UK with global academic exposure',
-      subtitle: 'Internationally recognised universities, shorter program duration and global alumni networks.',
-      description: 'The UK is ideal for students seeking globally recognised degrees, strong academic reputation, multicultural campuses and faster completion timelines.',
-      imageUrl: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=1400',
-      highlights: [
-        'Strong university brand value and global recognition.',
-        'Shorter bachelor and master program duration in many cases.',
-        'Excellent for business, law, healthcare, finance and creative fields.'
-      ],
-      stats: [
-        { label: 'Popular Route', value: 'PG' },
-        { label: 'Duration', value: 'Short' },
-        { label: 'Brand Value', value: 'High' }
-      ],
-      gradient: 'bg-gradient-to-br from-indigo-50 via-white to-sky-50'
+      id: 'australia',
+      country: 'Australia',
+      flagUrl: 'https://flagcdn.com/w80/au.png'
     },
     {
       id: 'canada',
       country: 'Canada',
-      flagUrl: 'https://flagcdn.com/w80/ca.png',
-      title: 'Study in Canada with work and migration pathways',
-      subtitle: 'Student-friendly environment, co-op programs, career mobility and long-term settlement routes.',
-      description: 'Canada is a preferred option for students looking for international education, employability, part-time work options and structured post-study pathways.',
-      imageUrl: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1400',
-      highlights: [
-        'Strong student support and multicultural learning environment.',
-        'Good fit for diploma, UG, PG and co-op based programs.',
-        'Popular among students planning long-term migration outcomes.'
-      ],
-      stats: [
-        { label: 'Student Fit', value: 'High' },
-        { label: 'Co-op Route', value: 'Yes' },
-        { label: 'Migration', value: 'Strong' }
-      ],
-      gradient: 'bg-gradient-to-br from-red-50 via-white to-blue-50'
+      flagUrl: 'https://flagcdn.com/w80/ca.png'
     },
     {
-      id: 'australia',
-      country: 'Australia',
-      flagUrl: 'https://flagcdn.com/w80/au.png',
-      title: 'Study in Australia with industry-linked programs',
-      subtitle: 'Career-oriented education, flexible programs and strong student lifestyle.',
-      description: 'Australia is suitable for students looking for practical education, strong campus experience, employability-linked courses and international exposure.',
-      imageUrl: 'https://images.pexels.com/photos/1878293/pexels-photo-1878293.jpeg?auto=compress&cs=tinysrgb&w=1400',
-      highlights: [
-        'Strong options in healthcare, IT, business, hospitality and engineering.',
-        'Good campus lifestyle and student support infrastructure.',
-        'Popular for students seeking employability-focused education.'
-      ],
-      stats: [
-        { label: 'Lifestyle', value: 'High' },
-        { label: 'Programs', value: 'Wide' },
-        { label: 'Work Route', value: 'Yes' }
-      ],
-      gradient: 'bg-gradient-to-br from-yellow-50 via-white to-sky-50'
+      id: 'germany',
+      country: 'Germany',
+      flagUrl: 'https://flagcdn.com/w80/de.png'
     },
     {
-      id: 'europe',
-      country: 'Europe',
-      flagUrl: 'https://flagcdn.com/w80/eu.png',
-      title: 'Explore Europe for affordable global education',
-      subtitle: 'Multiple countries, diverse programs, affordable options and multilingual career markets.',
-      description: 'European destinations offer strong value for students comparing cost, quality, career mobility, visa routes and access to international markets.',
-      imageUrl: 'https://images.pexels.com/photos/532826/pexels-photo-532826.jpeg?auto=compress&cs=tinysrgb&w=1400',
-      highlights: [
-        'Affordable study options across multiple European countries.',
-        'Strong pathways in medicine, engineering, business and technology.',
-        'Good choice for students comparing cost versus global exposure.'
-      ],
-      stats: [
-        { label: 'Cost Value', value: 'Good' },
-        { label: 'Options', value: 'Many' },
-        { label: 'Mobility', value: 'EU' }
-      ],
-      gradient: 'bg-gradient-to-br from-cyan-50 via-white to-blue-50'
+      id: 'ireland',
+      country: 'Ireland',
+      flagUrl: 'https://flagcdn.com/w80/ie.png'
+    },
+    {
+      id: 'usa',
+      country: 'United States',
+      flagUrl: 'https://flagcdn.com/w80/us.png'
+    },
+    {
+      id: 'uk',
+      country: 'United Kingdom',
+      flagUrl: 'https://flagcdn.com/w80/gb.png'
     }
   ];
 
-  get activeDestination(): StudyDestination {
-    return this.destinations.find(destination => destination.id === this.activeDestinationId) || this.destinations[0];
+  institutions: InstitutionCard[] = [
+    {
+      id: 'de-1',
+      countryId: 'germany',
+      name: 'Hochschulen Fresenius',
+      location: 'Berlin, Berlin, DE',
+      description: 'Hochschule Fresenius began life as the Chemisches Laboratorium Fresenius in 1848 and has evolved into a privately owned German university with a long tradition of applied learning, industry orientation and academic excellence.',
+      imageUrl: 'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=200',
+      featured: true
+    },
+    {
+      id: 'de-2',
+      countryId: 'germany',
+      name: 'Mediadesign Hochschule',
+      location: 'Berlin, Berlin, DE',
+      description: 'For over 35 years, Mediadesign Hochschule has been guiding students with expertise and experience into creative industries, design careers, media business, digital communication and future-focused professional pathways.',
+      imageUrl: 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://images.pexels.com/photos/3184398/pexels-photo-3184398.jpeg?auto=compress&cs=tinysrgb&w=200',
+      featured: true
+    },
+    {
+      id: 'de-3',
+      countryId: 'germany',
+      name: 'University of Europe for Applied Sciences',
+      location: 'Iserlohn, Nordrhein-Westfalen, DE',
+      description: 'The University of Europe for Applied Sciences is a vibrant and dynamic institution dedicated to providing top-quality education to students from all around the world with a strong career and industry orientation.',
+      imageUrl: 'https://images.pexels.com/photos/8197543/pexels-photo-8197543.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://images.pexels.com/photos/3184433/pexels-photo-3184433.jpeg?auto=compress&cs=tinysrgb&w=200',
+      featured: true
+    },
+
+    {
+      id: 'au-1',
+      countryId: 'australia',
+      name: 'Australian Learning Institute',
+      location: 'Sydney, New South Wales, AU',
+      description: 'A practical education partner supporting international students with career-oriented programs, student support services, employability pathways and industry-connected learning models.',
+      imageUrl: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/au.png',
+      featured: true
+    },
+    {
+      id: 'au-2',
+      countryId: 'australia',
+      name: 'Southern Skills College',
+      location: 'Melbourne, Victoria, AU',
+      description: 'A vocational and higher education institution focused on hospitality, healthcare, business and technology programs for international learners.',
+      imageUrl: 'https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/au.png',
+      featured: true
+    },
+    {
+      id: 'au-3',
+      countryId: 'australia',
+      name: 'Pacific Career University',
+      location: 'Brisbane, Queensland, AU',
+      description: 'A student-focused institution offering applied learning, placement readiness, career guidance and practical academic programs for global students.',
+      imageUrl: 'https://images.pexels.com/photos/256520/pexels-photo-256520.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/au.png',
+      featured: true
+    },
+
+    {
+      id: 'ca-1',
+      countryId: 'canada',
+      name: 'Canadian Applied College',
+      location: 'Toronto, Ontario, CA',
+      description: 'A Canada-focused academic partner supporting diploma, undergraduate and postgraduate learners with applied programs, co-op exposure and career readiness.',
+      imageUrl: 'https://images.pexels.com/photos/356065/pexels-photo-356065.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ca.png',
+      featured: true
+    },
+    {
+      id: 'ca-2',
+      countryId: 'canada',
+      name: 'Maple Global University',
+      location: 'Vancouver, British Columbia, CA',
+      description: 'A globally oriented institution offering student support, multicultural campus experience, employability-linked programs and international student services.',
+      imageUrl: 'https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ca.png',
+      featured: true
+    },
+    {
+      id: 'ca-3',
+      countryId: 'canada',
+      name: 'Northbridge College',
+      location: 'Ottawa, Ontario, CA',
+      description: 'A practical learning destination for international students exploring business, IT, healthcare and skilled career-oriented education routes.',
+      imageUrl: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ca.png',
+      featured: true
+    },
+
+    {
+      id: 'ie-1',
+      countryId: 'ireland',
+      name: 'Dublin Business College',
+      location: 'Dublin, Leinster, IE',
+      description: 'An Ireland-focused partner institution supporting business, technology, analytics and management pathways for global student mobility.',
+      imageUrl: 'https://images.pexels.com/photos/301920/pexels-photo-301920.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ie.png',
+      featured: true
+    },
+    {
+      id: 'ie-2',
+      countryId: 'ireland',
+      name: 'Emerald Tech Institute',
+      location: 'Cork, Munster, IE',
+      description: 'A modern technology and applied learning institution focused on digital skills, employability, international student support and career transition.',
+      imageUrl: 'https://images.pexels.com/photos/3184328/pexels-photo-3184328.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ie.png',
+      featured: true
+    },
+    {
+      id: 'ie-3',
+      countryId: 'ireland',
+      name: 'Ireland International Academy',
+      location: 'Galway, Connacht, IE',
+      description: 'A student-centred academic partner offering global learning pathways, progression routes and employability-oriented academic support.',
+      imageUrl: 'https://images.pexels.com/photos/320518/pexels-photo-320518.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/ie.png',
+      featured: true
+    },
+
+    {
+      id: 'us-1',
+      countryId: 'usa',
+      name: 'American Pathway College',
+      location: 'Boston, Massachusetts, US',
+      description: 'A US academic partner supporting undergraduate, postgraduate and pathway programs with strong student services and global campus exposure.',
+      imageUrl: 'https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/us.png',
+      featured: true
+    },
+    {
+      id: 'us-2',
+      countryId: 'usa',
+      name: 'United Global University',
+      location: 'New York, New York, US',
+      description: 'A globally recognised learning environment focused on innovation, business, technology, research exposure and international student development.',
+      imageUrl: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/us.png',
+      featured: true
+    },
+    {
+      id: 'us-3',
+      countryId: 'usa',
+      name: 'Pacific State College',
+      location: 'San Francisco, California, US',
+      description: 'A career-aligned institution supporting international students with applied programs, industry exposure and strong global learning outcomes.',
+      imageUrl: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/us.png',
+      featured: true
+    },
+
+    {
+      id: 'uk-1',
+      countryId: 'uk',
+      name: 'London Career University',
+      location: 'London, England, UK',
+      description: 'A UK academic partner offering recognised programs, international student support, career preparation and strong academic progression routes.',
+      imageUrl: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/gb.png',
+      featured: true
+    },
+    {
+      id: 'uk-2',
+      countryId: 'uk',
+      name: 'Manchester Global College',
+      location: 'Manchester, England, UK',
+      description: 'A globally connected institution supporting international learners with business, healthcare, technology and creative academic pathways.',
+      imageUrl: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/gb.png',
+      featured: true
+    },
+    {
+      id: 'uk-3',
+      countryId: 'uk',
+      name: 'British Applied Sciences Institute',
+      location: 'Birmingham, England, UK',
+      description: 'An applied sciences focused institution supporting students with academic progression, workplace readiness and strong professional outcomes.',
+      imageUrl: 'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=900',
+      logoUrl: 'https://flagcdn.com/w80/gb.png',
+      featured: true
+    }
+  ];
+
+  get filteredInstitutions(): InstitutionCard[] {
+    return this.institutions.filter(card => card.countryId === this.activeCountryId);
   }
 
-  selectDestination(id: string) {
-    this.activeDestinationId = id;
+  get activeCountryName(): string {
+    return this.countryTabs.find(tab => tab.id === this.activeCountryId)?.country || 'Partner';
   }
 
-  nextDestination() {
-    const currentIndex = this.destinations.findIndex(destination => destination.id === this.activeDestinationId);
-    const nextIndex = (currentIndex + 1) % this.destinations.length;
-    this.activeDestinationId = this.destinations[nextIndex].id;
-  }
-
-  previousDestination() {
-    const currentIndex = this.destinations.findIndex(destination => destination.id === this.activeDestinationId);
-    const previousIndex = currentIndex === 0 ? this.destinations.length - 1 : currentIndex - 1;
-    this.activeDestinationId = this.destinations[previousIndex].id;
+  selectCountry(id: string): void {
+    this.activeCountryId = id;
   }
 }

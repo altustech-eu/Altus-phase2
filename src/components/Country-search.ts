@@ -78,7 +78,12 @@ interface PartnerCard {
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
+                    </path>
                   </svg>
                 </div>
 
@@ -91,13 +96,14 @@ interface PartnerCard {
               </div>
             </div>
 
-            <!-- Region Tabs -->
+            <!-- Region Tabs: Europe Top, Asia + Middle East Bottom -->
             <div class="grid grid-cols-2 border-b border-slate-100">
               @for (tab of continents; track tab) {
                 <button
                   type="button"
                   (click)="setTab(tab)"
                   class="h-[40px] text-[11px] font-bold transition-colors border-r border-b border-slate-100"
+                  [class.col-span-2]="tab === 'Europe'"
                   [class.bg-[#0f62fe]]="activeTab === tab"
                   [class.text-white]="activeTab === tab"
                   [class.text-slate-600]="activeTab !== tab"
@@ -126,11 +132,13 @@ interface PartnerCard {
                   >
                     <div class="flex items-start justify-between gap-3">
                       <div class="flex items-center gap-3">
-                        <span class="flex h-7 w-10 shrink-0 overflow-hidden border border-slate-200 bg-white">
+
+                        <!-- Circle Flag -->
+                        <span class="flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
                           <img
                             [src]="country.flagUrl"
                             [alt]="country.name + ' flag'"
-                            class="h-full w-full object-cover"
+                            class="h-full w-full rounded-full object-cover"
                             loading="lazy"
                           />
                         </span>
@@ -139,6 +147,7 @@ interface PartnerCard {
                           <p class="text-[13px] font-bold text-slate-900">
                             {{ country.name }}
                           </p>
+
                           <p class="mt-0.5 text-[10.5px] font-medium text-slate-500">
                             {{ country.continent }}
                           </p>
@@ -169,6 +178,7 @@ interface PartnerCard {
                     <p class="text-[13px] font-semibold text-slate-700">
                       No destination found
                     </p>
+
                     <p class="mt-1 text-[12px] text-slate-500">
                       Try another country or region.
                     </p>
@@ -188,8 +198,8 @@ interface PartnerCard {
 
               <div
                 class="absolute inset-0 opacity-[0.18]"
-                style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); background-size: 105%; background-position: center; background-repeat: no-repeat; filter: grayscale(100%);"
-              ></div>
+                style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); background-size: 105%; background-position: center; background-repeat: no-repeat; filter: grayscale(100%);">
+              </div>
 
               <div class="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-blue-50/60"></div>
             </div>
@@ -203,11 +213,13 @@ interface PartnerCard {
                 </p>
 
                 <div class="mt-2 flex items-center gap-3">
-                  <span class="flex h-7 w-11 overflow-hidden border border-slate-200 bg-white shadow-sm">
+
+                  <!-- Active Country Circle Flag -->
+                  <span class="flex h-10 w-10 overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
                     <img
                       [src]="activeCountry.flagUrl"
                       [alt]="activeCountry.name + ' flag'"
-                      class="h-full w-full object-cover"
+                      class="h-full w-full rounded-full object-cover"
                       loading="lazy"
                     />
                   </span>
@@ -224,6 +236,7 @@ interface PartnerCard {
                     <p class="text-[15px] font-bold text-slate-950">
                       {{ stat.value }}
                     </p>
+
                     <p class="mt-1 text-[10px] font-medium text-slate-500">
                       {{ stat.label }}
                     </p>
@@ -248,7 +261,7 @@ interface PartnerCard {
                   [class.opacity-30]="country.continent !== activeTab && country.code !== activeCountry.code"
                 >
                   <span
-                    class="relative flex h-9 w-9 items-center justify-center border-2 bg-white shadow-lg transition-all duration-300"
+                    class="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 bg-white shadow-lg transition-all duration-300"
                     [class.border-[#0f62fe]]="activeCountry.code === country.code"
                     [class.scale-125]="activeCountry.code === country.code"
                     [class.border-white]="activeCountry.code !== country.code"
@@ -257,17 +270,17 @@ interface PartnerCard {
                     <img
                       [src]="country.flagUrl"
                       [alt]="country.name + ' flag'"
-                      class="h-5 w-7 object-cover"
+                      class="h-full w-full rounded-full object-cover"
                       loading="lazy"
                     />
 
                     @if (activeCountry.code === country.code) {
-                      <span class="absolute -inset-2 border border-[#0f62fe]/40 animate-ping"></span>
+                      <span class="absolute -inset-2 rounded-full border border-[#0f62fe]/40 animate-ping"></span>
                     }
                   </span>
 
                   @if (activeCountry.code === country.code) {
-                    <span class="absolute left-1/2 top-[44px] -translate-x-1/2 whitespace-nowrap bg-[#0f62fe] px-3 py-1.5 text-[11px] font-bold text-white shadow-lg">
+                    <span class="absolute left-1/2 top-[48px] -translate-x-1/2 whitespace-nowrap bg-[#0f62fe] px-3 py-1.5 text-[11px] font-bold text-white shadow-lg">
                       {{ country.name }}
                     </span>
                   }
@@ -297,6 +310,7 @@ interface PartnerCard {
                   @for (item of activeCountry.opportunities; track item) {
                     <div class="flex items-start gap-3 border border-slate-100 bg-slate-50 p-2.5">
                       <span class="mt-1.5 h-2 w-2 shrink-0 bg-[#0f62fe]"></span>
+
                       <p class="text-[11.5px] font-medium leading-relaxed text-slate-700">
                         {{ item }}
                       </p>
@@ -329,6 +343,7 @@ interface PartnerCard {
                           loading="lazy"
                           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                         />
+
                         <span class="hidden h-full w-full items-center justify-center text-[12px] font-bold text-[#0f62fe]">
                           C360
                         </span>
@@ -408,7 +423,7 @@ export class CountrySearchComponent {
   searchTerm = '';
   activeCountryCode = 'DE';
 
-  continents = ['Europe', 'Asia', 'Middle East', 'North America'];
+  continents = ['Europe', 'Asia', 'Middle East'];
 
   countries: Country[] = [
     {
@@ -492,26 +507,6 @@ export class CountrySearchComponent {
       ]
     },
     {
-      name: 'Canada',
-      code: 'CA',
-      continent: 'North America',
-      flagUrl: 'https://flagcdn.com/w80/ca.png',
-      headline: 'Study, co-op education and migration-linked pathways',
-      description: 'Canada supports students looking for diploma, UG, PG, co-op education and structured long-term settlement planning.',
-      mapX: 21,
-      mapY: 31,
-      opportunities: [
-        'Good fit for diploma, UG, PG and co-op based programs.',
-        'Student-friendly destination with multicultural ecosystem.',
-        'Popular among candidates planning long-term migration.'
-      ],
-      stats: [
-        { label: 'Co-op', value: 'Yes' },
-        { label: 'Migration', value: 'Strong' },
-        { label: 'Fit', value: 'High' }
-      ]
-    },
-    {
       name: 'Australia',
       code: 'AU',
       continent: 'Asia',
@@ -529,6 +524,26 @@ export class CountrySearchComponent {
         { label: 'Lifestyle', value: 'High' },
         { label: 'Programs', value: 'Wide' },
         { label: 'Work', value: 'Yes' }
+      ]
+    },
+    {
+      name: 'India',
+      code: 'IN',
+      continent: 'Asia',
+      flagUrl: 'https://flagcdn.com/w80/in.png',
+      headline: 'Source market for training, counselling and documentation',
+      description: 'India is a major source market for Ausbildung counselling, German training, study abroad preparation and candidate documentation.',
+      mapX: 67,
+      mapY: 58,
+      opportunities: [
+        'German language training and career counselling hub.',
+        'Candidate sourcing for Ausbildung, jobs and study abroad.',
+        'Documentation and readiness preparation before migration.'
+      ],
+      stats: [
+        { label: 'Source', value: 'High' },
+        { label: 'Training', value: 'A1-B1' },
+        { label: 'Market', value: 'Large' }
       ]
     },
     {
@@ -552,23 +567,103 @@ export class CountrySearchComponent {
       ]
     },
     {
-      name: 'India',
-      code: 'IN',
-      continent: 'Asia',
-      flagUrl: 'https://flagcdn.com/w80/in.png',
-      headline: 'Source market for training, counselling and documentation',
-      description: 'India is a major source market for Ausbildung counselling, German training, study abroad preparation and candidate documentation.',
-      mapX: 67,
-      mapY: 58,
+      name: 'Oman',
+      code: 'OM',
+      continent: 'Middle East',
+      flagUrl: 'https://flagcdn.com/w80/om.png',
+      headline: 'Growing education, healthcare and workforce mobility market',
+      description: 'Oman is suitable for Gulf-based counselling, healthcare recruitment, skilled workforce movement, training partnerships and regional expansion.',
+      mapX: 64,
+      mapY: 61,
       opportunities: [
-        'German language training and career counselling hub.',
-        'Candidate sourcing for Ausbildung, jobs and study abroad.',
-        'Documentation and readiness preparation before migration.'
+        'Good market for healthcare, hospitality and technical workforce pathways.',
+        'Useful for franchise, counselling centre and training partnership models.',
+        'Strong potential for India-GCC-Europe mobility bridge.'
       ],
       stats: [
-        { label: 'Source', value: 'High' },
-        { label: 'Training', value: 'A1-B1' },
-        { label: 'Market', value: 'Large' }
+        { label: 'GCC Access', value: 'Good' },
+        { label: 'Workforce', value: 'High' },
+        { label: 'Market', value: 'Emerging' }
+      ]
+    },
+    {
+      name: 'Kuwait',
+      code: 'KW',
+      continent: 'Middle East',
+      flagUrl: 'https://flagcdn.com/w80/kw.png',
+      headline: 'Strategic Gulf source market for Indian and expat students',
+      description: 'Kuwait is important for school tie-ups, Indian and Pakistani student communities, study abroad counselling, Ausbildung awareness and healthcare workforce mobility.',
+      mapX: 60,
+      mapY: 54,
+      opportunities: [
+        'Strong source market for Indian and Pakistani expat students.',
+        'Relevant for school partnerships, parent counselling and study abroad funnels.',
+        'Useful for Ausbildung, Germany pathway and healthcare recruitment campaigns.'
+      ],
+      stats: [
+        { label: 'Students', value: 'High' },
+        { label: 'Schools', value: 'Strong' },
+        { label: 'GCC', value: 'Core' }
+      ]
+    },
+    {
+      name: 'Azerbaijan',
+      code: 'AZ',
+      continent: 'Middle East',
+      flagUrl: 'https://flagcdn.com/w80/az.png',
+      headline: 'Bridge market for education, medicine and regional mobility',
+      description: 'Azerbaijan can support affordable education pathways, medicine-related programs, regional student mobility and Europe-linked transition planning.',
+      mapX: 57,
+      mapY: 47,
+      opportunities: [
+        'Relevant for medicine, affordable education and regional academic routes.',
+        'Useful as a bridge between Asia, Europe and Middle East markets.',
+        'Potential for university partnerships and student mobility programs.'
+      ],
+      stats: [
+        { label: 'Education', value: 'Good' },
+        { label: 'Medicine', value: 'Strong' },
+        { label: 'Bridge', value: 'Yes' }
+      ]
+    },
+    {
+      name: 'Qatar',
+      code: 'QA',
+      continent: 'Middle East',
+      flagUrl: 'https://flagcdn.com/w80/qa.png',
+      headline: 'Premium Gulf education and professional mobility destination',
+      description: 'Qatar is relevant for high-income expat families, premium education counselling, healthcare workforce, hospitality careers and Gulf employer networks.',
+      mapX: 61,
+      mapY: 57,
+      opportunities: [
+        'Good for premium student counselling and parent-led decision journeys.',
+        'Relevant for healthcare, hospitality, business and professional workforce demand.',
+        'Useful for Gulf employer and institutional partnership development.'
+      ],
+      stats: [
+        { label: 'Premium', value: 'High' },
+        { label: 'Jobs', value: 'Good' },
+        { label: 'Families', value: 'Strong' }
+      ]
+    },
+    {
+      name: 'Saudi Arabia',
+      code: 'SA',
+      continent: 'Middle East',
+      flagUrl: 'https://flagcdn.com/w80/sa.png',
+      headline: 'Large-scale workforce, education and transformation market',
+      description: 'Saudi Arabia is a major opportunity market for skilled workforce mobility, healthcare recruitment, hospitality, technical jobs, institutional training and business expansion.',
+      mapX: 59,
+      mapY: 59,
+      opportunities: [
+        'Large demand potential in healthcare, hospitality, construction, logistics and technical sectors.',
+        'Useful for institutional partnerships, workforce training and recruitment pipelines.',
+        'Strong market for transformation-linked education and career mobility services.'
+      ],
+      stats: [
+        { label: 'Scale', value: 'Very High' },
+        { label: 'Jobs', value: 'High' },
+        { label: 'Growth', value: 'Strong' }
       ]
     }
   ];

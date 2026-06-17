@@ -6,7 +6,7 @@ import { HomeShowcaseComponent } from './2cardssection';
 import { AusbildungSectionComponent } from './ausbildung-section'; 
 import { CountrySearchComponent } from './Country-search'; 
 import { ToolsSectionComponent } from './Tools-section'; 
-import { IndustriesSectionComponent } from './By-industries';
+// import { IndustriesSectionComponent } from './By-industries';
 import { StudyProgramsComponent } from './Whychooseourprogram'; 
 import { StudyDestinationComponent } from './Choose your Study Destination'; 
 import { GermanTrainingComponent } from './german-training'; 
@@ -27,7 +27,7 @@ import { FooterComponent } from './Footer';
     CountrySearchComponent,
     TrustedLogosComponent,
     ToolsSectionComponent,
-    IndustriesSectionComponent,
+    // IndustriesSectionComponent,
     StudyProgramsComponent,
     StudyDestinationComponent,
     GermanTrainingComponent,
@@ -46,7 +46,6 @@ import { FooterComponent } from './Footer';
     <app-country-search></app-country-search>
     <app-tools-section></app-tools-section>
     <app-trusted-logos></app-trusted-logos>
-    <app-industries-section></app-industries-section>
     <app-study-programs></app-study-programs>
     <app-study-destination></app-study-destination>
     <app-german-training></app-german-training>
